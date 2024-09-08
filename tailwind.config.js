@@ -5,12 +5,8 @@ whitelist = ["gray", "red", "orange", "yellow", "green", "teal", "blue", "purple
 
 module.exports = {
   mode: 'jit',
-  purge: {
-    content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
-    options: {
-      whitelist,
-    }
-  },
+  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  safelist: whitelist,
   theme: {
     extend: {
       fontFamily: {

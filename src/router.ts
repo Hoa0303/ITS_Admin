@@ -1,14 +1,22 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
+import Login from "./views/Login.vue";
 import Dashboard from "./views/Dashboard.vue";
+import OrderPage from "./views/OrderPage.vue";
+import LaptopPage from "./views/Product/LaptopPage.vue";
+import SmartPhonePage from "./views/SmartPhonePage.vue";
+import UserPage from "./views/UserPage.vue";
+import BrandPage from "./views/Others/BrandPage.vue";
+import CategoryPage from "./views/Others/CategoryPage.vue";
+import ColorPage from "./views/Others/ColorPage.vue";
+import Blank from "./views/Blank.vue";
+import NotFound from "./views/NotFound.vue";
 import Forms from "./views/Forms.vue";
 import Tables from "./views/Tables.vue";
 import UIElements from "./views/UIElements.vue";
-import Login from "./views/Login.vue";
 import Modal from "./views/Modal.vue";
 import Card from "./views/Card.vue";
-import Blank from "./views/Blank.vue";
-import NotFound from "./views/NotFound.vue";
+
 
 const routes: RouteRecordRaw[] = [
   {
@@ -23,34 +31,61 @@ const routes: RouteRecordRaw[] = [
     component: Dashboard,
   },
   {
-    path: "/forms",
-    name: "Forms",
-    component: Forms,
+    path: "/order",
+    name: "Order",
+    component: OrderPage,
   },
   {
-    path: "/cards",
-    name: "Cards",
-    component: Card,
+    path: "/laptop",
+    name: "Laptop",
+    component: LaptopPage,
   },
   {
-    path: "/tables",
-    name: "Tables",
-    component: Tables,
+    path: "/phone",
+    name: "Smart Phone",
+    component: SmartPhonePage,
   },
   {
-    path: "/ui-elements",
-    name: "UIElements",
-    component: UIElements,
+    path: "/product/add",
+    name: "Add product",
+    component: () => import("./views/Product/AddProductPage.vue"),
+    props: true
   },
   {
-    path: "/modal",
-    name: "Modal",
-    component: Modal,
+    path: "/product/:id",
+    name: "product.edit",
+    component: () => import("./views/Product/EditProductPage.vue"),
+    props: true
+  },
+  {
+    path: "/user",
+    name: "User",
+    component: UserPage,
+  },
+  {
+    path: "/brand",
+    name: "Brand",
+    component: BrandPage,
+  },
+  {
+    path: "/category",
+    name: "Category",
+    component: CategoryPage,
+  },
+  {
+    path: "/color",
+    name: "Color",
+    component: ColorPage,
   },
   {
     path: "/blank",
     name: "Blank",
-    component: Blank,
+    component: Forms,
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "notfound",
+    component: NotFound,
   },
 ];
 
