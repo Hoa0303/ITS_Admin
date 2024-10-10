@@ -3,6 +3,7 @@ import { ref } from 'vue';
 export interface ProductsData {
     id: number;
     name: string;
+    enable: boolean;
     discount: number;
     category: string;
     brand: string;

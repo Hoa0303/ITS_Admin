@@ -11,31 +11,18 @@ import {
     Row, Image, Table, Card, Radio, InputNumber,
     Upload, Checkbox, Select, Switch
 } from 'ant-design-vue';
+const components = [
+    Button, Input, Form, Avatar, Col, 
+    Row, Menu, PageHeader, Dropdown, Pagination, Modal, 
+    Image, Table, Card, Upload, Checkbox, 
+    Select, Radio, InputNumber, Switch
+];
 
 const app = createApp(App);
 
 app.component('default-layout', DashboardLayout);
 app.component('empty-layout', EmptyLayout);
+components.forEach(component => app.use(component));
 
 app.use(router)
-app.use(Button)
-app.use(Input)
-app.use(Form)
-app.use(Avatar)
-app.use(Col)
-app.use(Row)
-app.use(Menu)
-app.use(PageHeader)
-app.use(Dropdown)
-app.use(Pagination)
-app.use(Modal)
-app.use(Image)
-app.use(Table)
-app.use(Card)
-app.use(Upload)
-app.use(Checkbox)
-app.use(Select)
-app.use(Radio)
-app.use(InputNumber)
-app.use(Switch)
 app.mount('#app');

@@ -40,23 +40,21 @@
             </tr>
           </tbody>
         </table>
-        <div class="flex items-center justify-between px-5 py-4 bg-white border-t">
+        <!-- <div class="flex items-center justify-between px-5 py-4 bg-white border-t">
           <span class="text-sm text-gray-600">Showing 1 to 4 of 50 Entries</span>
           <div class="flex items-center space-x-2">
             <button
               class="px-4 py-2 text-sm font-semibold text-gray-800 bg-gray-300 rounded hover:bg-gray-400 focus:outline-none focus:ring">
-              <!-- <i class="fas fa-arrow-left"></i> -->
             </button>
             <button
               class="px-4 py-2 text-sm font-semibold text-gray-800 bg-gray-300 rounded hover:bg-gray-400 focus:outline-none focus:ring">
-              <!-- <i class="fas fa-arrow-right"></i> -->
             </button>
           </div>
-        </div>
+        </div> -->
       </div>
 
-      <div class="my-6 bg-white rounded-lg shadow h-fit">
-        <form>
+      <div class="my-6 bg-white rounded-lg shadow h-fit sticky top-10">
+        <form @submit.prevent>
           <div class="flex items-center justify-between px-5 py-3 border-b bg-indigo-800 text-gray-100 rounded-t-lg">
             <h3 class="text-sm font-medium">Edit Brand</h3>
           </div>
@@ -85,7 +83,7 @@
               class="px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none">
               Cancel
             </button>
-            <button @click="saveBrand" type="submit"
+            <button @click="saveBrand"
               class="px-3 py-1 text-sm text-white bg-indigo-600 rounded-md hover:bg-indigo-500 focus:outline-none">
               Save
             </button>
@@ -99,8 +97,9 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import { useTableData } from "../../hooks/dataTable";
-import brandService from "../../services/brand.service";
 import { toImageLink } from "../../services/common.service";
+import httpService from "../../services/http.service";
+import { Brand_API } from "../../services/api_url";
 
 export default defineComponent({
   setup() {
@@ -109,8 +108,8 @@ export default defineComponent({
 
     async function getAll() {
       try {
-        const res = await brandService.getAllBrands();
-        const formattedData = res.data.map((item: any) => ({
+        const res = await httpService.get(Brand_API);
+        const formattedData = res.map((item: any) => ({
           id: item.id,
           name: item.name,
           image: toImageLink(item.imgUrl),
@@ -139,8 +138,8 @@ export default defineComponent({
     async function deleteBrand(id: string) {
       try {
         console.log("Delete brand: " + id);
-        await brandService.remove(id);
-        getAll();
+        await httpService.del(Brand_API + `/${id}`);
+        setBrandsData(brandsData.value.filter(brand => brand.id !== id));
       } catch (error) {
         console.error("Error deleting brand:", error);
       }
@@ -161,16 +160,19 @@ export default defineComponent({
             data.append('files', selectedBrand.value.image)
           }
           console.log(data.get('name'), data.get('files'));
-          const res = await brandService.update(selectedBrand.value.id, data);
-          console.log(res);
+          const res = await httpService.put(Brand_API + `/${selectedBrand.value.id}`, data);
+          const newData = brandsData.value.map((item) => {
+            if (item.id === res.id) {
+              return { ...item, name: res.name }
+            }
+            return item
+          })
+          setBrandsData(newData)
         } else {
           // Thêm brands mới
-          // console.log(data.get('name'), data.get('files'));
-          const res = await brandService.create(data);
-          console.log(res);
+          const res = await httpService.post(Brand_API, data);
+          setBrandsData([...brandsData.value, res]);
         }
-        getAll();
-        // cancelEdit();
       } catch (error) {
         console.error("Error saving brand:", error);
       }

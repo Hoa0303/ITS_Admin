@@ -3,12 +3,14 @@
         <div class="grid lg:grid-cols-2 md:grid-cols-1 gap-4 rounded-lg">
             <div class="shadow-lg">
                 <a-card class="h-full" :bordered="true">
+
                     <a-form-item label="Name" name="name"
                         :rules="[{ required: true, message: 'Please enter the product name' }]">
                         <a-input v-model:value="formState.name" class="rounded-lg h-9 border-gray-300 w-full"
                             placeholder="Enter your product's name" />
                     </a-form-item>
 
+                    <!-- Category -->
                     <div class="grid grid-cols-3 gap-3">
                         <a-form-item label="Category" name="category"
                             :rules="[{ required: true, message: 'Please select a category' }]">
@@ -36,6 +38,7 @@
                         </a-form-item>
                     </div>
 
+                    <!-- Add color + img_Color -->
                     <a-card :bordered="true" class="my-4 shadow-xl" v-for="(color) in dynamicValidateForm.colors"
                         :key="color.id">
                         <div class="grid grid-cols-3 gap-3">
@@ -71,18 +74,19 @@
                             <MinusCircleOutlined class="text-red-500 cursor-pointer" @click="removeColor(color)" />
                         </div>
                     </a-card>
-
                     <a-form-item>
                         <a-button type="dashed" class="flex items-center" @click="addColor">
                             <PlusOutlined />
                             Add color
                         </a-button>
                     </a-form-item>
+
                 </a-card>
             </div>
 
             <div class="shadow-lg">
                 <a-card class="h-full" :bordered="true">
+                    <!-- Screen -->
                     <div class="grid grid-cols-3 gap-3">
                         <a-form-item label="Screen" name="SizeScreen"
                             :rules="[{ required: true, message: 'Please enter the screen details' }]">
@@ -101,6 +105,7 @@
                         </a-form-item>
                     </div>
 
+                    <!-- Camera -->
                     <div class="grid grid-cols-2 gap-3">
                         <a-form-item label="Rear Camera" name="RearCam"
                             :rules="[{ required: true, message: 'Please enter the rear camera details' }]">
@@ -113,23 +118,41 @@
                         </a-form-item>
                     </div>
 
-                    <div class="grid grid-cols-3 gap-3">
+                    <!-- CPU-GPU -->
+                    <div class="grid grid-cols-2 gap-3">
                         <a-form-item label="CPU" name="Cpu"
                             :rules="[{ required: true, message: 'Please enter the CPU details' }]">
                             <a-input v-model:value="formState.Cpu" class="rounded-lg h-9 border-gray-300 w-full" />
                         </a-form-item>
 
+                        <a-form-item label="GPU" name="Gpu"
+                            :rules="[{ required: true, message: 'Please enter the CPU details' }]">
+                            <a-input v-model:value="formState.Gpu" class="rounded-lg h-9 border-gray-300 w-full" />
+                        </a-form-item>
+                    </div>
+
+                    <!-- Ram-Rom -->
+                    <div class="grid grid-cols-2 gap-3">
                         <a-form-item label="Ram" name="Ram"
                             :rules="[{ required: true, message: 'Please enter the RAM details' }]">
-                            <a-input v-model:value="formState.Ram" class="rounded-lg h-9 border-gray-300 w-full" />
+                            <a-select v-model:value="formState.Ram" size="large"
+                                class="rounded-lg h-9 border-gray-300 w-full">
+                                <a-select-option v-for="ram in [4, 6, 8, 12, 32, 64]" :key="ram" :value="ram">{{ ram
+                                    }}</a-select-option>
+                            </a-select>
                         </a-form-item>
 
                         <a-form-item label="Rom" name="rom"
                             :rules="[{ required: true, message: 'Please enter the ROM details' }]">
-                            <a-input v-model:value="formState.rom" class="rounded-lg h-9 border-gray-300 w-full" />
+                            <a-select v-model:value="formState.rom" size="large"
+                                class="rounded-lg h-9 border-gray-300 w-full">
+                                <a-select-option v-for="rom in [64, 128, 256, 512, 1]" :key="rom" :value="rom">{{
+                                    rom }}</a-select-option>
+                            </a-select>
                         </a-form-item>
                     </div>
 
+                    <!-- Battery -->
                     <div class="grid grid-cols-3 gap-3">
                         <a-form-item label="Battery" name="Battery"
                             :rules="[{ required: true, message: 'Please enter the battery details' }]">
@@ -147,6 +170,19 @@
                         </a-form-item>
                     </div>
 
+                    <!-- Version -->
+                    <div class="grid grid-cols-2 gap-3">
+                        <a-form-item label="Version" name="version"
+                            :rules="[{ required: true, message: 'Please enter the version' }]">
+                            <a-input v-model:value="formState.version" class="rounded-lg h-9 border-gray-300 w-full" />
+                        </a-form-item>
+                        <a-form-item label="Line" name="line"
+                            :rules="[{ required: true, message: 'Please enter the line' }]">
+                            <a-input v-model:value="formState.line" class="rounded-lg h-9 border-gray-300 w-full" />
+                        </a-form-item>
+                    </div>
+
+                    <!-- Upload -->
                     <a-form-item label="Uplpad">
                         <a-upload v-model:file-list="fileList" name="avatar" list-type="picture-card"
                             class="avatar-uploader" :before-upload="beforeUpload">
@@ -159,10 +195,12 @@
                         </a-upload>
                     </a-form-item>
 
+                    <!-- Button -->
                     <a-form-item>
-                        <a-button type="primary" html-type="submit">Create</a-button>
+                        <a-button type="primary" html-type="submit">Save</a-button>
                         <a-button style="margin-left: 10px" @click="resetForm">Reset</a-button>
                     </a-form-item>
+
                 </a-card>
             </div>
         </div>
@@ -175,6 +213,8 @@ import { PlusOutlined, UploadOutlined, LoadingOutlined, MinusCircleOutlined } fr
 import { useTableData } from "../../hooks/dataTable";
 import productService from '../../services/product.service';
 import { toImageLink } from '../../services/common.service';
+import httpService from '../../services/http.service';
+import { Product_API } from '../../services/api_url';
 
 const { categoriesData, setcategoriesData } = useTableData();
 const { brandsData, setBrandsData } = useTableData();
@@ -196,8 +236,8 @@ const props = defineProps<Props>();
 
 async function getProduct(id: number) {
     try {
-        const res = await productService.getProduct(id);
-        const product = res.data;
+        const res = await httpService.get(Product_API + `/${id}`);
+        const product = res;
 
         formState.name = product.name || '';
         formState.category = product.categoryId || 1;
@@ -209,11 +249,14 @@ async function getProduct(id: number) {
         formState.RearCam = product.rearCam || '';
         formState.FrontCam = product.frontCam || '';
         formState.Cpu = product.cpu || '';
+        formState.Gpu = product.gpu || '';
         formState.Ram = product.ram || 8;
         formState.rom = product.rom || 512;
         formState.Battery = product.battery || '';
         formState.size = product.size || '';
         formState.weight = product.weight || 1;
+        formState.version = product.version || '';
+        formState.line = product.line || '';
 
         dynamicValidateForm.colors = product.color.map((color: any) => ({
             colorID: color.colorId || 1,
@@ -246,11 +289,14 @@ interface FormState {
     RearCam: string;
     FrontCam: string;
     Cpu: string;
+    Gpu: string;
     Ram: number;
     rom: number;
     Battery: string;
     size: string;
     weight: number;
+    version: string;
+    line: string;
 }
 
 const formState = reactive<FormState>({
@@ -264,11 +310,14 @@ const formState = reactive<FormState>({
     RearCam: '',
     FrontCam: '',
     Cpu: '',
+    Gpu: '',
     Ram: 8,
     rom: 512,
     Battery: '',
     size: '',
     weight: 1,
+    version: '',
+    line: '',
 });
 
 const dynamicValidateForm = reactive<{ colors: Color[] }>({
@@ -302,11 +351,14 @@ const onFinish = async (values: any) => {
     formData.append('Details.RearCam', formState.RearCam);
     formData.append('Details.FrontCam', formState.FrontCam);
     formData.append('Details.Cpu', formState.Cpu);
+    formData.append('Details.Gpu', formState.Gpu);
     formData.append('Details.Ram', formState.Ram.toString());
     formData.append('Details.Rom', formState.rom.toString());
     formData.append('Details.Battery', formState.Battery.toString());
     formData.append('Details.size', formState.size);
     formData.append('Details.weight', formState.weight.toString());
+    formData.append('Details.version', formState.version);
+    formData.append('Details.line', formState.line)
 
     fileList.value.forEach((file) => {
         if (file.originFileObj) {
@@ -321,9 +373,9 @@ const onFinish = async (values: any) => {
     // for (const [key, value] of formData.entries()) {
     //     console.log(`${key}: ${value}`);
     // }
-    
+
     try {
-        const response = await productService.update(parseInt(props.id), formData);
+        const response = await await httpService.put(Product_API + `/${parseInt(props.id)}`, formData);
         console.log('Product update successfully:', response);
     } catch (error) {
         console.error('Error creating product:', error);
@@ -341,11 +393,14 @@ const resetForm = () => {
     formState.RearCam = '';
     formState.FrontCam = '';
     formState.Cpu = '';
+    formState.Gpu = '';
     formState.Ram = 0;
     formState.rom = 0;
     formState.Battery = '';
     formState.size = '';
     formState.weight = 0;
+    formState.version = '';
+    formState.line = '';
     dynamicValidateForm.colors = [];
     fileList.value = [];
 };

@@ -28,7 +28,7 @@
             v-model="password" />
         </label>
 
-        <div class="flex items-center justify-between mt-4">
+        <!-- <div class="flex items-center justify-between mt-4">
           <div>
             <label class="inline-flex items-center">
               <input type="checkbox"
@@ -40,7 +40,7 @@
           <div>
             <a class="block text-sm text-indigo-700 fontme hover:underline" href="#">Forgot your password?</a>
           </div>
-        </div>
+        </div> -->
 
         <div class="mt-6">
           <button type="submit"

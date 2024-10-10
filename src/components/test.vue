@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <a-form :model="formState" @finish="onFinish" layout="vertical">
       <div class="grid lg:grid-cols-2 md:grid-cols-1 bg-white rounded-lg">
           <div style="padding: 30px">
@@ -275,4 +275,4 @@ const addColor = () => {
 onMounted(() => {
   getAttribute();
 });
-</script>
+</script> -->

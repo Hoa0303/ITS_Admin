@@ -35,23 +35,10 @@
             </tr>
           </tbody>
         </table>
-        <div class="flex items-center justify-between px-5 py-4 bg-white border-t">
-          <span class="text-sm text-gray-600">Showing 1 to 4 of 50 Entries</span>
-          <div class="flex items-center space-x-2">
-            <button
-              class="px-4 py-2 text-sm font-semibold text-gray-800 bg-gray-300 rounded hover:bg-gray-400 focus:outline-none focus:ring">
-              <!-- <i class="fas fa-arrow-left"></i> -->
-            </button>
-            <button
-              class="px-4 py-2 text-sm font-semibold text-gray-800 bg-gray-300 rounded hover:bg-gray-400 focus:outline-none focus:ring">
-              <!-- <i class="fas fa-arrow-right"></i> -->
-            </button>
-          </div>
-        </div>
       </div>
 
       <div class="my-6 bg-white rounded-lg shadow h-fit">
-        <form>
+        <form @submit.prevent>
           <div class="flex items-center justify-between px-5 py-3 border-b bg-indigo-800 text-gray-100 rounded-t-lg">
             <h3 class="text-sm font-medium">Edit Color</h3>
           </div>
@@ -69,7 +56,7 @@
               class="px-3 py-1 text-sm text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 focus:outline-none">
               Cancel
             </button>
-            <button @click="saveColor" type="submit"
+            <button @click="saveColor"
               class="px-3 py-1 text-sm text-white bg-indigo-600 rounded-md hover:bg-indigo-500 focus:outline-none">
               Save
             </button>
@@ -83,7 +70,8 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from "vue";
 import { useTableData } from "../../hooks/dataTable";
-import colorService from "../../services/color.service";
+import httpService from "../../services/http.service";
+import { Color_API } from "../../services/api_url";
 
 export default defineComponent({
   setup() {
@@ -101,8 +89,8 @@ export default defineComponent({
 
     async function getAll() {
       try {
-        const res = await colorService.getAll();
-        const formattedData = res.data.map((item: any) => ({
+        const data = await httpService.get(Color_API)
+        const formattedData = data.map((item: any) => ({
           id: item.id,
           name: item.name,
         }));
@@ -111,6 +99,7 @@ export default defineComponent({
         console.error("Error fetching color:", error);
       }
     }
+
     function confirmDelete(id: string) {
       if (confirm("Are you sure you want to delete this color?")) {
         deleteColor(id);
@@ -120,8 +109,8 @@ export default defineComponent({
     async function deleteColor(id: string) {
       try {
         console.log("Delete color: " + id);
-        await colorService.remove(id);
-        getAll();
+        await httpService.del(Color_API + `/${id}`);
+        setColorData(colorData.value.filter(color => color.id !== id));
       } catch (error) {
         console.error("Error deleting color:", error);
       }
@@ -133,21 +122,24 @@ export default defineComponent({
           name: selectedColor.value.name
         }
         if (selectedColor.value.id) {
-          // Nếu tồn tại ID => update color
-          console.log(selectedColor.value.id + ' ' + data.name);
-          const res = await colorService.update(selectedColor.value.id, data);
-          console.log(res);
+          const res = await httpService.put(Color_API + `/${selectedColor.value.id}`, data)
+          const newData = colorData.value.map((item) => {
+            if (item.id === res.id) {
+              return { ...item, name: res.name }
+            }
+            return item
+          })
+          setColorData(newData)
         } else {
-          // Thêm color mới
-          console.log(data);
-          const res = await colorService.create(data);
-          console.log(res);
+          const res = await httpService.post(Color_API, data);
+          setColorData([...colorData.value, res]);
+
         }
-        getAll();
       } catch (error) {
         console.error("Error saving color:", error);
       }
     }
+
     onMounted(() => {
       getAll();
     });
