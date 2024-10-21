@@ -214,6 +214,7 @@ import { useTableData } from "../../hooks/dataTable";
 import productService from '../../services/product.service';
 import httpService from '../../services/http.service';
 import { Product_API } from '../../services/api_url';
+import { message } from 'ant-design-vue';
 
 const { categoriesData, setcategoriesData } = useTableData();
 const { brandsData, setBrandsData } = useTableData();
@@ -312,12 +313,12 @@ const onFinish = async (values: any) => {
     fileList.value.forEach((file) => {
         formData.append('form', file.originFileObj);
     });
-    // console.log(formData);
     try {
-        const response = await httpService.post(Product_API, formData);
-        console.log('Product created successfully:', response);
+        await message.loading("Create product...", 2)
+        await httpService.postWithAuth(Product_API, formData);
+        message.success('Product created successfully:', 2);
     } catch (error) {
-        console.error('Error creating product:', error);
+        message.error('Error creating product:', 2);
     }
 };
 

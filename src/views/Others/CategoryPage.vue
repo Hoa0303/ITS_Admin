@@ -25,12 +25,15 @@
                       d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
                   </svg>
                 </button>
-                <button @click="confirmDelete(item.id)" class="text-red-600 hover:text-red-900">
-                  <svg width="20" height="20" fill="currentColor" class="bi bi-trash3">
-                    <path
-                      d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                  </svg>
-                </button>
+                <a-popconfirm title="Are you sure delete this task?" ok-text="Yes" cancel-text="No"
+                  @confirm="deleteCategory(item.id)">
+                  <button class="text-red-600 hover:text-red-900">
+                    <svg width="20" height="20" fill="currentColor" class="bi bi-trash3">
+                      <path
+                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                  </button>
+                </a-popconfirm>
               </td>
             </tr>
           </tbody>
@@ -72,15 +75,43 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useTableData } from "../../hooks/dataTable";
 import httpService from "../../services/http.service";
 import { Category_API } from "../../services/api_url";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
     const { categoriesData, setcategoriesData } = useTableData();
     const selectedCategory = ref({ id: '', name: '' });
 
+    const updateData = async (data: any) => {
+      try {
+        await message.loading('Updating category...', 2);
+        const res = await httpService.putWithAuth(Category_API + `/${selectedCategory.value.id}`, data);
+        const newData = categoriesData.value.map((item) => {
+          if (item.id === res.id) {
+            return { ...item, name: res.name };
+          }
+          return item;
+        });
+        setcategoriesData(newData);
+        message.success('Category updated successfully', 2);
+      } catch (error) {
+        message.error('Error updating category', 2);
+      }
+    };
+
+    const createData = async (data: any) => {
+      try {
+        await message.loading('Create category...', 2);
+        const res = await httpService.postWithAuth(Category_API, data);
+        setcategoriesData([...categoriesData.value, res]);
+        message.success('Category created successfully', 2);
+      } catch (error) {
+        message.error('Error updating category', 2);
+      }
+    }
+
     function editCategory(category: any) {
       selectedCategory.value = { ...category };
-
     }
 
     function cancelEdit() {
@@ -100,19 +131,15 @@ export default defineComponent({
       }
     }
 
-    function confirmDelete(id: string) {
-      if (confirm("Are you sure you want to delete this category?")) {
-        deleteCategory(id);
-      }
-    }
-
     async function deleteCategory(id: string) {
       try {
+        await message.loading('Delete category...', 2);
         console.log("Delete category: " + id);
-        await httpService.del(Category_API + `/${id}`);
+        await httpService.delWithAuth(Category_API + `/${id}`);
         setcategoriesData(categoriesData.value.filter(category => category.id !== id));
+        message.success('Category deleted successfully', 2)
       } catch (error) {
-        console.error("Error deleting category:", error);
+        message.error("Error deleting category:", 2);
       }
     }
 
@@ -123,18 +150,9 @@ export default defineComponent({
         }
         if (selectedCategory.value.id) {
           // Nếu tồn tại ID => update category
-          console.log(selectedCategory.value.id + ' ' + data.name);
-          const res = await httpService.put(Category_API + `/${selectedCategory.value.id}`, data);
-          const newData = categoriesData.value.map((item) => {
-            if (item.id === res.id) {
-              return { ...item, name: res.name }
-            }
-            return item
-          })
-          setcategoriesData(newData)
+          updateData(data);
         } else {
-          const res = await httpService.post(Category_API, data);
-          setcategoriesData([...categoriesData.value, res]);
+          createData(data);
         }
       } catch (error) {
         console.error("Error saving category:", error);
@@ -145,7 +163,7 @@ export default defineComponent({
       getAll();
     });
 
-    return { categoriesData, selectedCategory, editCategory, cancelEdit, confirmDelete, saveCategory };
+    return { categoriesData, selectedCategory, editCategory, cancelEdit, deleteCategory, saveCategory };
   },
 });
 </script>

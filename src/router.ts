@@ -2,13 +2,19 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 import Login from "./views/Login.vue";
 import Dashboard from "./views/Dashboard.vue";
-import OrderPage from "./views/OrderPage.vue";
-import LaptopPage from "./views/Product/LaptopPage.vue";
-import SmartPhonePage from "./views/SmartPhonePage.vue";
-import UserPage from "./views/UserPage.vue";
+
+import OrderPage from "./views/Order/OrderPage.vue";
+
+import ProductPage from "./views/Product/ProductPage.vue";
+
+import UserPage from "./views/User/UserPage.vue";
+
+import Warehouse from "./views/Warehouse/Warehouse.vue";
+
 import BrandPage from "./views/Others/BrandPage.vue";
 import CategoryPage from "./views/Others/CategoryPage.vue";
 import ColorPage from "./views/Others/ColorPage.vue";
+
 import Blank from "./views/Blank.vue";
 import NotFound from "./views/NotFound.vue";
 import Forms from "./views/Forms.vue";
@@ -16,7 +22,6 @@ import Tables from "./views/Tables.vue";
 import UIElements from "./views/UIElements.vue";
 import Modal from "./views/Modal.vue";
 import Card from "./views/Card.vue";
-
 
 const routes: RouteRecordRaw[] = [
   {
@@ -30,38 +35,49 @@ const routes: RouteRecordRaw[] = [
     name: "Dashboard",
     component: Dashboard,
   },
+
   {
     path: "/order",
     name: "Order",
     component: OrderPage,
   },
   {
-    path: "/laptop",
-    name: "Laptop",
-    component: LaptopPage,
+    path: "/order/:id",
+    name: "order.detail",
+    component: () => import("./views/Order/OrderDetail.vue"),
+    props: true,
   },
+
   {
-    path: "/phone",
-    name: "Smart Phone",
-    component: SmartPhonePage,
+    path: "/product",
+    name: "Product",
+    component: ProductPage,
   },
   {
     path: "/product/add",
     name: "Add product",
     component: () => import("./views/Product/AddProductPage.vue"),
-    props: true
+    props: true,
   },
   {
     path: "/product/:id",
     name: "product.edit",
     component: () => import("./views/Product/EditProductPage.vue"),
-    props: true
+    props: true,
   },
+
   {
     path: "/user",
     name: "User",
     component: UserPage,
   },
+
+  {
+    path: "/warehouse",
+    name: "Warehouse",
+    component: Warehouse,
+  },
+
   {
     path: "/brand",
     name: "Brand",
@@ -80,7 +96,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/blank",
     name: "Blank",
-    component: Forms,
+    component: Tables,
   },
   {
     path: "/:pathMatch(.*)*",

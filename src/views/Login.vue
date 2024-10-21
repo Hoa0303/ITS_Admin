@@ -61,8 +61,8 @@ import authService from "../services/auth.service";
 export default defineComponent({
   setup() {
     const router = useRouter();
-    const email = ref("Admin@123");
-    const password = ref("Admin123");
+    const email = ref("hoab2005755@student.ctu.edu.vn");
+    const password = ref("Hoa123");
 
     async function login() {
       try {

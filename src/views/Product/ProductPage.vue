@@ -6,8 +6,6 @@
         <div class="relative">
           <select v-model="pageSize" @change="updatePageSize"
             class="block w-full h-full px-4 py-2 pr-8 leading-tight text-gray-700 bg-white border border-gray-400 rounded-l appearance-none focus:outline-none focus:bg-white focus:border-gray-500">
-            <option :value="2">2</option>
-            <option :value="5">5</option>
             <option :value="10">10</option>
             <option :value="20">20</option>
           </select>
@@ -66,6 +64,7 @@
                 <th class="px-5 py-3 text-sm font-semibold uppercase">Category</th>
                 <th class="px-5 py-3 text-sm font-semibold uppercase">Brand</th>
                 <th class="px-5 py-3 text-sm font-semibold uppercase">Image</th>
+                <th class="px-5 py-3 text-sm font-semibold uppercase">Sold</th>
                 <th class="px-5 py-3 text-sm font-semibold uppercase">Active</th>
                 <th class="px-5 py-3 text-sm font-semibold uppercase">Action</th>
               </tr>
@@ -75,13 +74,14 @@
                 class="odd:bg-gray-100 even:bg-gray-50 hover:bg-gray-200 transition duration-150 ease-in-out">
                 <td class="px-6 py-4 text-lg text-gray-700 border-b">{{ index + 1 }}</td>
                 <td class="px-6 py-4 text-gray-600 border-b">{{ item.name }}</td>
-                <td class="px-6 py-4 text-gray-600 border-b">{{ item.discount }}</td>
+                <td class="px-6 py-4 text-gray-600 border-b">{{ item.discount }}%</td>
                 <td class="px-6 py-4 text-gray-600 border-b">{{ item.category }}</td>
                 <td class="px-6 py-4 text-gray-600 border-b">{{ item.brand }}</td>
                 <td class="px-6 py-4 border-b">
                   <a-image :width="100" :height="80" :src="item.imageUrl" alt="Brand Image"
                     class="rounded-md object-contain" />
                 </td>
+                <td class="px-6 py-4 text-gray-600 border-b">{{ item.sold }}</td>
                 <td class="px-6 py-4 text-gray-600 border-b">
                   <a-switch v-model:checked="item.enable" @click="updateEnable(item.id, item.enable)" />
                 </td>
@@ -96,12 +96,15 @@
                       </svg>
                     </button>
                   </router-link>
-                  <button class="text-red-600 hover:text-red-900" @click="confirmDelete(item.id)">
-                    <svg width="20" height="20" fill="currentColor" class="bi bi-trash3">
-                      <path
-                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                    </svg>
-                  </button>
+                  <a-popconfirm title="Are you sure delete this task?" ok-text="Yes" cancel-text="No"
+                    @confirm="deleteProduct(item.id)">
+                    <button class="text-red-600 hover:text-red-900">
+                      <svg width="20" height="20" fill="currentColor" class="bi bi-trash3">
+                        <path
+                          d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                      </svg>
+                    </button>
+                  </a-popconfirm>
                 </td>
               </tr>
             </tbody>
@@ -135,11 +138,12 @@ import { useRouter } from 'vue-router';
 import { toImageLink } from "../../services/common.service";
 import httpService from "../../services/http.service";
 import { Product_API } from "../../services/api_url";
+import { message } from "ant-design-vue";
 
 const { productsData, setProductData } = useTableData();
 const router = useRouter();
 
-const pageSize = ref<number>(5);
+const pageSize = ref<number>(10);
 const currentPage = ref<number>(1);
 const totalEntries = ref<number>(0);
 const data = ref([]);
@@ -155,6 +159,7 @@ async function getAll(page: number, size: number, searchQuery: string) {
     id: item.id,
     name: item.name,
     discount: item.discount,
+    sold: item.sold,
     category: item.categoryName,
     brand: item.brandName,
     enable: item.enable,
@@ -171,25 +176,23 @@ async function updateEnable(id: number, enable: boolean) {
       enable: enable
     }
     await productService.updateEnable(id, data)
+    message.success("Update product successfully", 2)
   }
   catch {
-    console.log("Cannot update product: ", id);
-  }
-}
-
-function confirmDelete(id: number) {
-  if (confirm("Are you sure you want to delete this product?")) {
-    deleteProduct(id);
+    message.error("Cannot update product: ", id);
   }
 }
 
 async function deleteProduct(id: number) {
   try {
-    await httpService.del(Product_API + `/${id}`);
+    await message.loading('Delete product...', 2)
+    console.log("Delete product: " + id);
+    await httpService.delWithAuth(Product_API + `/${id}`);
     setProductData(productsData.value.filter(product => product.id !== id));
+    message.success('Product Deleted successfully', 2);
   }
   catch {
-    console.log("Cannot delete product: ", id);
+    message.error("Cannot delete product: ", id);
   }
 }
 

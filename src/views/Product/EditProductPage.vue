@@ -215,6 +215,7 @@ import productService from '../../services/product.service';
 import { toImageLink } from '../../services/common.service';
 import httpService from '../../services/http.service';
 import { Product_API } from '../../services/api_url';
+import { message } from 'ant-design-vue';
 
 const { categoriesData, setcategoriesData } = useTableData();
 const { brandsData, setBrandsData } = useTableData();
@@ -375,10 +376,11 @@ const onFinish = async (values: any) => {
     // }
 
     try {
-        const response = await await httpService.put(Product_API + `/${parseInt(props.id)}`, formData);
-        console.log('Product update successfully:', response);
+        await message.loading('Update product...', 2);
+        await httpService.putWithAuth(Product_API + `/${parseInt(props.id)}`, formData);
+        message.success('Product update successfully:', 2);
     } catch (error) {
-        console.error('Error creating product:', error);
+        message.error('Error creating product:', 2);
     }
 };
 

@@ -30,27 +30,19 @@
                       d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
                   </svg>
                 </button>
-                <button @click="confirmDelete(item.id)" class="text-red-600 hover:text-red-900">
-                  <svg width="20" height="20" fill="currentColor" class="bi bi-trash3">
-                    <path
-                      d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                  </svg>
-                </button>
+                <a-popconfirm title="Are you sure delete this task?" ok-text="Yes" cancel-text="No"
+                  @confirm="deleteBrand(item.id)">
+                  <button class="text-red-600 hover:text-red-900">
+                    <svg width="20" height="20" fill="currentColor" class="bi bi-trash3">
+                      <path
+                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                  </button>
+                </a-popconfirm>
               </td>
             </tr>
           </tbody>
         </table>
-        <!-- <div class="flex items-center justify-between px-5 py-4 bg-white border-t">
-          <span class="text-sm text-gray-600">Showing 1 to 4 of 50 Entries</span>
-          <div class="flex items-center space-x-2">
-            <button
-              class="px-4 py-2 text-sm font-semibold text-gray-800 bg-gray-300 rounded hover:bg-gray-400 focus:outline-none focus:ring">
-            </button>
-            <button
-              class="px-4 py-2 text-sm font-semibold text-gray-800 bg-gray-300 rounded hover:bg-gray-400 focus:outline-none focus:ring">
-            </button>
-          </div>
-        </div> -->
       </div>
 
       <div class="my-6 bg-white rounded-lg shadow h-fit sticky top-10">
@@ -90,6 +82,7 @@
           </div>
         </form>
       </div>
+      
     </div>
   </div>
 </template>
@@ -100,11 +93,41 @@ import { useTableData } from "../../hooks/dataTable";
 import { toImageLink } from "../../services/common.service";
 import httpService from "../../services/http.service";
 import { Brand_API } from "../../services/api_url";
+import { message } from 'ant-design-vue';
 
 export default defineComponent({
   setup() {
     const { brandsData, setBrandsData } = useTableData();
     const selectedBrand = ref({ id: '', name: '', image: '', imageFile: null as File | null });
+
+    const updateData = async (data: any) => {
+      try {
+        await message.loading('Updating brand...', 2);
+        const res = await httpService.putWithAuth(Brand_API + `/${selectedBrand.value.id}`, data);
+        const newData = brandsData.value.map((item) => {
+          if (item.id === res.id) {
+            return { ...item, name: res.name };
+          }
+          return item;
+        });
+        setBrandsData(newData);
+        message.success('Brand updated successfully', 2);
+      } catch (error) {
+        message.error('Error updating brand', 2);
+      }
+    };
+
+    const createData = async (data: any) => {
+      try {
+        await message.loading('Create brand...', 2);
+        const res = await httpService.postWithAuth(Brand_API, data);
+        setBrandsData([...brandsData.value, res]);
+        console.log(brandsData.value);
+        message.success('Brand created successfully', 2);
+      } catch (error) {
+        message.error('Error updating brand', 2);
+      }
+    }
 
     async function getAll() {
       try {
@@ -122,26 +145,21 @@ export default defineComponent({
 
     function editBrand(brand: any) {
       selectedBrand.value = { ...brand };
-
     }
 
     function cancelEdit() {
       selectedBrand.value = { id: '', name: '', image: '', imageFile: null };
     }
 
-    function confirmDelete(id: string) {
-      if (confirm("Are you sure you want to delete this brand?")) {
-        deleteBrand(id);
-      }
-    }
-
     async function deleteBrand(id: string) {
       try {
+        await message.loading('Delete brand...', 2)
         console.log("Delete brand: " + id);
-        await httpService.del(Brand_API + `/${id}`);
+        await httpService.delWithAuth(Brand_API + `/${id}`);
         setBrandsData(brandsData.value.filter(brand => brand.id !== id));
+        message.success('Brand Deleted successfully', 2);
       } catch (error) {
-        console.error("Error deleting brand:", error);
+        message.error("Error deleting brand:", 2);
       }
     }
 
@@ -159,19 +177,11 @@ export default defineComponent({
           } else {
             data.append('files', selectedBrand.value.image)
           }
-          console.log(data.get('name'), data.get('files'));
-          const res = await httpService.put(Brand_API + `/${selectedBrand.value.id}`, data);
-          const newData = brandsData.value.map((item) => {
-            if (item.id === res.id) {
-              return { ...item, name: res.name }
-            }
-            return item
-          })
-          setBrandsData(newData)
+          // Update brands
+          updateData(data);
         } else {
-          // Thêm brands mới
-          const res = await httpService.post(Brand_API, data);
-          setBrandsData([...brandsData.value, res]);
+          // Thêm brand mới
+          createData(data);
         }
       } catch (error) {
         console.error("Error saving brand:", error);
@@ -195,7 +205,7 @@ export default defineComponent({
       getAll();
     });
 
-    return { brandsData, selectedBrand, editBrand, cancelEdit, confirmDelete, saveBrand, handleFileChange };
+    return { brandsData, selectedBrand, editBrand, cancelEdit, deleteBrand, saveBrand, handleFileChange };
   },
 });
 </script>

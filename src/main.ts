@@ -9,13 +9,15 @@ import {
     Avatar, Button, Col, Dropdown, Form,
     Input, Menu, Modal, PageHeader, Pagination,
     Row, Image, Table, Card, Radio, InputNumber,
-    Upload, Checkbox, Select, Switch
+    Upload, Checkbox, Select, Switch, Popconfirm,
+    Result, DatePicker,Tabs
 } from 'ant-design-vue';
 const components = [
     Button, Input, Form, Avatar, Col, 
     Row, Menu, PageHeader, Dropdown, Pagination, Modal, 
     Image, Table, Card, Upload, Checkbox, 
-    Select, Radio, InputNumber, Switch
+    Select, Radio, InputNumber, Switch, Popconfirm, 
+    Result, DatePicker, Tabs
 ];
 
 const app = createApp(App);

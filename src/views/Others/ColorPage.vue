@@ -25,12 +25,15 @@
                       d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
                   </svg>
                 </button>
-                <button @click="confirmDelete(item.id)" class="text-red-600 hover:text-red-900">
-                  <svg width="20" height="20" fill="currentColor" class="bi bi-trash3">
-                    <path
-                      d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
-                  </svg>
-                </button>
+                <a-popconfirm title="Are you sure delete this task?" ok-text="Yes" cancel-text="No"
+                  @confirm="deleteColor(item.id)">
+                  <button class="text-red-600 hover:text-red-900">
+                    <svg width="20" height="20" fill="currentColor" class="bi bi-trash3">
+                      <path
+                        d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                    </svg>
+                  </button>
+                </a-popconfirm>
               </td>
             </tr>
           </tbody>
@@ -72,15 +75,43 @@ import { defineComponent, ref, onMounted } from "vue";
 import { useTableData } from "../../hooks/dataTable";
 import httpService from "../../services/http.service";
 import { Color_API } from "../../services/api_url";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   setup() {
     const { colorData, setColorData } = useTableData();
     const selectedColor = ref({ id: '', name: '' });
 
+    const updateData = async (data: any) => {
+      try {
+        await message.loading('Updating color...', 2);
+        const res = await httpService.putWithAuth(Color_API + `/${selectedColor.value.id}`, data);
+        const newData = colorData.value.map((item) => {
+          if (item.id === res.id) {
+            return { ...item, name: res.name };
+          }
+          return item;
+        });
+        setColorData(newData);
+        message.success('Color updated successfully', 2);
+      } catch (error) {
+        message.error('Error updating color', 2);
+      }
+    };
+
+    const createData = async (data: any) => {
+      try {
+        await message.loading('Create color...', 2);
+        const res = await httpService.postWithAuth(Color_API, data);
+        setColorData([...colorData.value, res]);
+        message.success('Color created successfully', 2);
+      } catch (error) {
+        message.error('Error updating color', 2);
+      }
+    }
+
     function editColor(color: any) {
       selectedColor.value = { ...color };
-
     }
 
     function cancelEdit() {
@@ -100,19 +131,15 @@ export default defineComponent({
       }
     }
 
-    function confirmDelete(id: string) {
-      if (confirm("Are you sure you want to delete this color?")) {
-        deleteColor(id);
-      }
-    }
-
     async function deleteColor(id: string) {
       try {
+        await message.loading('Delete color...', 2)
         console.log("Delete color: " + id);
-        await httpService.del(Color_API + `/${id}`);
+        await httpService.delWithAuth(Color_API + `/${id}`);
         setColorData(colorData.value.filter(color => color.id !== id));
+        message.success('Color deleted successfully', 2)
       } catch (error) {
-        console.error("Error deleting color:", error);
+        message.error("Error deleting color:", 2);
       }
     }
 
@@ -122,18 +149,9 @@ export default defineComponent({
           name: selectedColor.value.name
         }
         if (selectedColor.value.id) {
-          const res = await httpService.put(Color_API + `/${selectedColor.value.id}`, data)
-          const newData = colorData.value.map((item) => {
-            if (item.id === res.id) {
-              return { ...item, name: res.name }
-            }
-            return item
-          })
-          setColorData(newData)
+          updateData(data);
         } else {
-          const res = await httpService.post(Color_API, data);
-          setColorData([...colorData.value, res]);
-
+          createData(data);
         }
       } catch (error) {
         console.error("Error saving color:", error);
@@ -144,7 +162,7 @@ export default defineComponent({
       getAll();
     });
 
-    return { colorData, selectedColor, editColor, cancelEdit, confirmDelete, saveColor };
+    return { colorData, selectedColor, editColor, deleteColor, cancelEdit, saveColor };
   },
 });
 </script>

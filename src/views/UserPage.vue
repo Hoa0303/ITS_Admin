@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <h3 class="text-3xl font-medium text-gray-700">Users Page</h3>
     <div class="mt-6">
@@ -157,4 +157,4 @@ export default defineComponent({
     };
   },
 });
-</script>
+</script> -->

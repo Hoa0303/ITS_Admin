@@ -1,8 +1,9 @@
 <template>
-    <div class="page">
-        <p>
-            Oops, không thể tìm thấy trang. Trở về
-            <router-link to="/">trang chủ.</router-link>
-        </p>
-    </div>
+    <a-result status="500" title="500" sub-title="Sorry, the server is wrong.">
+        <template #extra>
+            <router-link to='/dashboard'>
+                <a-button type="primary">Back Home</a-button>
+            </router-link>
+        </template>
+    </a-result>
 </template>

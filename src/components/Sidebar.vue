@@ -50,9 +50,9 @@ export default defineComponent({
       const pathToKeyMap: PathToKeyMap = {
         '/dashboard': '1',
         '/order': '2',
-        '/laptop': '3',
-        '/phone': '4',
-        '/user': '5',
+        '/product': '3',
+        '/user': '4',
+        '/ware': '5',
         '/brand': '6',
         '/category': '7',
         '/color': '8',
@@ -85,26 +85,26 @@ export default defineComponent({
       {
         key: '3',
         icon: () => h(DesktopOutlined, { style: { fontSize: '15px' } }),
-        label: 'Laptop',
-        title: 'Laptop',
+        label: 'Products',
+        title: 'Products',
         style: { fontSize: '15px' },
-        onClick: () => navigateTo('/laptop')
+        onClick: () => navigateTo('/product')
       },
       {
         key: '4',
-        icon: () => h(AppleOutlined, { style: { fontSize: '15px' } }),
-        label: 'Smart Phone',
-        title: 'Smart Phone',
-        style: { fontSize: '15px' },
-        onClick: () => navigateTo('/phone')
-      },
-      {
-        key: '5',
         icon: () => h(UserOutlined, { style: { fontSize: '15px' } }),
         label: 'User',
         title: 'User',
         style: { fontSize: '15px' },
         onClick: () => navigateTo('/user')
+      },
+      {
+        key: '5',
+        icon: () => h(UserOutlined, { style: { fontSize: '15px' } }),
+        label: 'Warehouse',
+        title: 'Warehouse',
+        style: { fontSize: '15px' },
+        onClick: () => navigateTo('/warehouse')
       },
       {
         key: 'sub1',
