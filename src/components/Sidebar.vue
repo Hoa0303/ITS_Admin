@@ -31,7 +31,10 @@
 import { defineComponent, ref, h, watchEffect } from "vue";
 import { useRouter, useRoute } from 'vue-router';
 import { useSidebar } from "../hooks/useSidebar";
-import { AppstoreOutlined, DashboardOutlined, ShoppingOutlined, DesktopOutlined, AppleOutlined, UserOutlined, FolderOutlined } from '@ant-design/icons-vue';
+import {
+  AppstoreOutlined, DashboardOutlined, ShoppingOutlined,
+  DesktopOutlined, ReconciliationOutlined, UserOutlined, FolderOutlined
+} from '@ant-design/icons-vue';
 
 export default defineComponent({
   setup() {
@@ -52,7 +55,7 @@ export default defineComponent({
         '/order': '2',
         '/product': '3',
         '/user': '4',
-        '/ware': '5',
+        '/warehouse': '5',
         '/brand': '6',
         '/category': '7',
         '/color': '8',
@@ -100,7 +103,7 @@ export default defineComponent({
       },
       {
         key: '5',
-        icon: () => h(UserOutlined, { style: { fontSize: '15px' } }),
+        icon: () => h(ReconciliationOutlined, { style: { fontSize: '15px' } }),
         label: 'Warehouse',
         title: 'Warehouse',
         style: { fontSize: '15px' },

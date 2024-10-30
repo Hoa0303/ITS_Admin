@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <h3 class="text-gray-700 text-3xl font-medium">Orders Page</h3>
   <div class="mt-6">
 
@@ -32,15 +32,6 @@
         </div>
       </div>
     </div>
-
-    <!-- <a-tabs v-model:activeKey="activeKey">
-      <a-tab-pane key="1" tab="All order">Tab 1</a-tab-pane>
-      <a-tab-pane key="2" tab="Processing">Tab 2</a-tab-pane>
-      <a-tab-pane key="3" tab="Confirmed">Tab 3</a-tab-pane>
-      <a-tab-pane key="4" tab="Shipping">Tab 4</a-tab-pane>
-      <a-tab-pane key="5" tab="Received">Tab 5</a-tab-pane>
-      <a-tab-pane key="6" tab="Canceled">Tab 6</a-tab-pane>
-    </a-tabs> -->
 
     <div class="flex flex-col mt-6">
       <div class="mt-6">
@@ -167,9 +158,9 @@
     </a-modal>
 
   </div>
-</template>
+</template> -->
 
-<script lang="ts" setup>
+<!-- <script lang="ts" setup>
 import { onMounted, reactive, ref, computed } from 'vue';
 import { ActionStatus, OrderSatus, OrdersData, useTableData } from '../../hooks/orderData';
 import orderService from '../../services/order.service';
@@ -180,8 +171,6 @@ import httpService from '../../services/http.service';
 import { Order_API } from '../../services/api_url';
 
 const { ordersData, setOrderData } = useTableData();
-
-const activeKey = ref('1');
 
 const statusStyles: { [key: number]: string } = {
   0: 'text-yellow-500',
@@ -320,4 +309,26 @@ function onSearchInput() {
 onMounted(() => {
   getAll(currentPage.value, pageSize.value, searchQuery.value);
 });
+</script> -->
+
+<template>
+  <h3 class="text-gray-700 text-3xl font-medium">Orders Page</h3>
+  <div class="mt-6">
+    <a-tabs v-model:activeKey="activeKey">
+      <a-tab-pane :key=6 tab="All order">
+        <OrderTable :activeKey="activeKey" />
+      </a-tab-pane>
+      <a-tab-pane v-for="index in 6" :key="index - 1" :tab="OrderSatus[index - 1]">
+        <OrderTable :activeKey="(index - 1)" />
+      </a-tab-pane>
+    </a-tabs>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { ref } from 'vue';
+import OrderTable from '../../components/Order/OrderTable.vue';
+import { OrderSatus } from '../../hooks/orderData';
+
+const activeKey = ref(6);
 </script>

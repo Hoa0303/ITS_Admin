@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 import Login from "./views/Login.vue";
-import Dashboard from "./views/Dashboard.vue";
+import Dashboard from "./views/Dashboard/Dashboard.vue";
 
 import OrderPage from "./views/Order/OrderPage.vue";
 
@@ -22,6 +22,8 @@ import Tables from "./views/Tables.vue";
 import UIElements from "./views/UIElements.vue";
 import Modal from "./views/Modal.vue";
 import Card from "./views/Card.vue";
+
+import test from "./components/test.vue";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -96,7 +98,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/blank",
     name: "Blank",
-    component: Tables,
+    component: test,
   },
   {
     path: "/:pathMatch(.*)*",

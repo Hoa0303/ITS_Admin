@@ -6,6 +6,23 @@ const get = (url: string) => axios.get(url).then((res) => res.data);
 const getWithAuth = (url: string) =>
   axios.get(url, { headers: getAuthHeader() }).then((res) => res.data);
 
+const getWithAuthPagination = (
+  url: string,
+  page: number,
+  pageSize: number,
+  search: string
+) =>
+  axios
+    .get(url, {
+      headers: getAuthHeader(),
+      params: {
+        page: page,
+        pageSize: pageSize,
+        search: search ?? "",
+      },
+    })
+    .then((res) => res.data);
+
 const post = (url: string, data: any) =>
   axios.post(url, data).then((res) => res.data);
 
@@ -26,6 +43,7 @@ const delWithAuth = (url: string) =>
 const httpService = {
   get,
   getWithAuth,
+  getWithAuthPagination,
   post,
   postWithAuth,
   put,

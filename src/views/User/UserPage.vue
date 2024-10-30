@@ -139,7 +139,7 @@ async function getAllUser() {
       updateAt: item.updateAt,
     }));
     setUserData(formattedData);
-    console.log(usersData.value);
+    // console.log(usersData.value);
   }
   catch {
     console.log("Error");

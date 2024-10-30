@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const toImageLink = (url: string) => API_URL + "/" + url;
@@ -23,3 +25,14 @@ export const formatTime = (value: string) => {
   const data = new Date(value);
   return data.toLocaleTimeString();
 };
+
+export const formattedDayJs = (dateString: string) => {
+  return dayjs(dateString);
+};
+
+export const formatDateMonth = (date: string) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, '0'); 
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  return `${day}/${month}`;
+}

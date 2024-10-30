@@ -15,12 +15,7 @@ const getAll = async (page: number, pageSize: number, search: any) =>
     })
     .then((res) => res.data);
 
-const productService = {
+const orderService = {
   getAll,
-  //   fetchProductAttributes,
-  //   create,
-  //   update,
-  //   updateEnable,
-  //   remove,
 };
-export default productService;
+export default orderService;

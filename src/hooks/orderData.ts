@@ -7,6 +7,7 @@ export interface OrdersData {
   orderDate: string;
   paymentMethod: string;
   orderStatus: number;
+  reviewed: boolean;
   payBackUrl: string;
 }
 

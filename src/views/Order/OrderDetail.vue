@@ -7,22 +7,23 @@
       <a-form layout="vertical">
         <div class="grid grid-cols-2 gap-3">
           <a-form-item label="Receiver">
-            <a-input :value="oderDetailData?.receiver" class="rounded-lg h-9 border-gray-300 w-full" />
+            <a-input :value="oderDetailData?.receiver" class="rounded-lg h-9 border-gray-300 w-full" readonly />
           </a-form-item>
           <a-form-item label="Receiver">
-            <a-input :value="oderDetailData?.phoneNumber" class="rounded-lg h-9 border-gray-300 w-full" />
+            <a-input :value="oderDetailData?.phoneNumber" class="rounded-lg h-9 border-gray-300 w-full" readonly />
           </a-form-item>
         </div>
         <a-form-item label="Address">
-          <a-input :value="oderDetailData?.deliveryAddress" class="rounded-lg h-9 border-gray-300 w-full" />
+          <a-input :value="oderDetailData?.deliveryAddress" class="rounded-lg h-9 border-gray-300 w-full" readonly />
         </a-form-item>
         <div class="grid grid-cols-2 gap-3">
           <a-form-item label="Order Date">
-            <a-input :value="formatDate(oderDetailData?.orderDate!)" class="rounded-lg h-9 border-gray-300 w-full" />
-            <!-- <a-date-picker v-model:value="value1" size="large" class="rounded-lg h-9 border-gray-300 w-full" /> -->
+            <a-date-picker :value="formattedDayJs(oderDetailData?.orderDate!)" format="YYYY-MM-DD" size="large" readonly
+              class="w-full" />
           </a-form-item>
           <a-form-item label="Order Time">
-            <a-input :value="formatTime(oderDetailData?.orderDate!)" class="rounded-lg h-9 border-gray-300 w-full" />
+            <a-input :value="formatTime(oderDetailData?.orderDate!)" class="rounded-lg h-9 border-gray-300 w-full"
+              readonly />
           </a-form-item>
         </div>
 
@@ -73,7 +74,7 @@ import { onMounted, ref } from "vue";
 import { useTableData } from "../../hooks/orderData";
 import httpService from "../../services/http.service";
 import { Order_API } from "../../services/api_url";
-import { fomratVND, formatDate, formatTime, toImageLink } from "../../services/common.service";
+import { fomratVND, formattedDayJs, formatTime, toImageLink } from "../../services/common.service";
 import dayjs, { Dayjs } from 'dayjs';
 
 const dateFormat = 'YYYY-MM-DD';
