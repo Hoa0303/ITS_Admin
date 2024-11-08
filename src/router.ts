@@ -1,11 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 
 import Login from "./views/Login.vue";
+
 import Dashboard from "./views/Dashboard/Dashboard.vue";
+import ProductDashboard from "./views/Dashboard/ProductDashboard.vue";
 
 import OrderPage from "./views/Order/OrderPage.vue";
 
 import ProductPage from "./views/Product/ProductPage.vue";
+
+import ReviewPage from "./views/Review/ReviewPage.vue";
 
 import UserPage from "./views/User/UserPage.vue";
 
@@ -14,6 +18,7 @@ import Warehouse from "./views/Warehouse/Warehouse.vue";
 import BrandPage from "./views/Others/BrandPage.vue";
 import CategoryPage from "./views/Others/CategoryPage.vue";
 import ColorPage from "./views/Others/ColorPage.vue";
+import LogPage from "./views/History/LogPage.vue";
 
 import Blank from "./views/Blank.vue";
 import NotFound from "./views/NotFound.vue";
@@ -36,6 +41,11 @@ const routes: RouteRecordRaw[] = [
     path: "/dashboard",
     name: "Dashboard",
     component: Dashboard,
+  },
+  {
+    path: "/productdashboard",
+    name: "Product Dashboard",
+    component: ProductDashboard,
   },
 
   {
@@ -69,6 +79,12 @@ const routes: RouteRecordRaw[] = [
   },
 
   {
+    path: "/review",
+    name: "Review",
+    component: ReviewPage,
+  },
+
+  {
     path: "/user",
     name: "User",
     component: UserPage,
@@ -95,6 +111,12 @@ const routes: RouteRecordRaw[] = [
     name: "Color",
     component: ColorPage,
   },
+  {
+    path: "/log",
+    name: "Log",
+    component: LogPage,
+  },
+
   {
     path: "/blank",
     name: "Blank",

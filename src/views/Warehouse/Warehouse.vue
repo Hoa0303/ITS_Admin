@@ -43,73 +43,8 @@
         <!-- Modal -->
         <div>
             <a-modal v-model:open="visible" :centered="true" style="margin: 1rem 0;"
-                title="Create a new warehouse receipt" :closable="false" :maskClosable="false" ok-text="Create"
-                cancel-text="Cancel" @ok="handleCreate">
-                <a-form ref="formRef" :model="formState" layout="vertical" name="form_in_modal">
-                    <div class="grid grid-cols-5 gap-3">
-                        <a-form-item class="col-span-2" label="Create Date"
-                            :rules="{ required: true, message: 'Please select the date!' }">
-                            <a-date-picker size="large" class="w-full" v-model:value="formState.createDate" disabled />
-                        </a-form-item>
-
-                        <a-form-item class="col-span-2" label="Warehouse Entry Date"
-                            :rules="{ required: true, message: 'Please select the date!' }">
-                            <a-date-picker size="large" class="w-full" v-model:value="formState.entryDate"
-                                :disabled-date="disableFutureDates" />
-                        </a-form-item>
-
-                        <a-form-item label="Total" :rules="{ required: true, message: 'Please enter the total!' }">
-                            <a-input-number class="" size="large" v-model:value="total" disabled />
-                        </a-form-item>
-                    </div>
-
-                    <div>
-                        <a-form-item label="Note">
-                            <a-textarea v-model:value="formState.note" placeholder="Enter Note" />
-                        </a-form-item>
-                    </div>
-
-                    <div v-for="(item, index) in formState.items" :key="index"
-                        class="border-gray-300 border mb-4 p-2 rounded-md relative shadow-md"
-                        :class="[(index % 2) === 0 && 'bg-gray-100']">
-
-                        <div class="grid grid-cols-3 gap-4 items-center">
-
-                            <a-form-item class="col-span-3 mb-2" :name="['items', index, 'productId']" label="Product"
-                                :rules="{ required: true, message: 'Please select a product!' }">
-                                <a-select size="large" v-model:value="item.productId" :options="productOptions"
-                                    placeholder="Select Product" @change="onProductChange(item, index)" />
-                            </a-form-item>
-
-                            <a-form-item class="mb-2" :name="['items', index, 'colorId']" label="Color"
-                                :rules="{ required: true, message: 'Please select a color!' }">
-                                <a-select size="large" v-model:value="item.colorId" :disabled="colorOptions.length == 0"
-                                    :options="colorOptions" placeholder="Select Color" />
-                            </a-form-item>
-                            <a-form-item class="mb-2" :name="['items', index, 'quantity']" label="Quantity"
-                                :rules="{ required: true, message: 'Please input the quantity!' }">
-                                <a-input-number size="large" v-model:value="item.quantity" placeholder="Enter Quantity"
-                                    style="width: 100%;" />
-                            </a-form-item>
-
-                            <a-form-item class="mb-2" :name="['items', index, 'costPrice']" label="Price"
-                                :rules="{ required: true, message: 'Please input the price!' }">
-                                <a-input-number size="large" v-model:value="item.costPrice" placeholder="Enter Price"
-                                    style="width: 100%;" />
-                            </a-form-item>
-                        </div>
-
-                        <CloseCircleOutlined @click="removeItem(index)"
-                            class="text-red-500 cursor-pointer absolute top-2 right-2" />
-                    </div>
-
-                    <a-form-item>
-                        <a-button type="dashed" block @click="addItem">
-                            <PlusOutlined />
-                            Add Item
-                        </a-button>
-                    </a-form-item>
-                </a-form>
+                title="Create a new warehouse receipt" :closable="false" :maskClosable="false" :footer="null">
+                <FormAdd @cancel="handleCancel" @create="handleCreate" />
             </a-modal>
         </div>
 
@@ -176,132 +111,45 @@
             </div>
         </div>
 
-
         <!-- Modal Detail -->
         <div>
-            <a-modal v-model:open="modelDetail" :centered="true" :footer="null" style="margin: 1rem 0;"
-                title="Receipt Detail" :closable="false">
-                <a-form layout="vertical">
-                    <div class="grid grid-cols-6 gap-3">
-                        <a-form-item class="col-span-2" label="Warehouse Entry Date">
-                            <a-date-picker size="large" class="w-full" :value="formattedDayJs(Receipt.createAt)"
-                                format="YYYY-MM-DD" readonly />
-                        </a-form-item>
-
-                        <a-form-item class="col-span-2" label="Warehouse Entry Date">
-                            <a-date-picker size="large" class="w-full" :value="formattedDayJs(Receipt.entryDate)"
-                                readonly />
-                        </a-form-item>
-
-                        <a-form-item class="col-span-2" label="Total">
-                            <a-input-number size="large" class="w-full" :value="fomratVND(Receipt.total)" readonly />
-                        </a-form-item>
-                    </div>
-
-                    <div>
-                        <a-form-item label="Note">
-                            <a-textarea size="large" v-model:value="Receipt.note" placeholder="Enter Note" readonly />
-                        </a-form-item>
-                    </div>
-
-                    <div v-for="(item, index) in warehouseDetail" :key="index"
-                        class="border-gray-300 border mb-4 p-2 rounded-md relative shadow-md"
-                        :class="[(index % 2) === 0 && 'bg-gray-100']">
-
-                        <div class="grid grid-cols-3 gap-4 items-center">
-
-                            <a-form-item class="col-span-3 mb-2" :label="'ProductId: ' + item.productId">
-                                <a-input class="rounded-lg border-gray-300" size="large" :value="item.productName"
-                                    readonly />
-                            </a-form-item>
-
-                            <a-form-item class="mb-2" :label="'ColorId:' + item.colorId">
-                                <a-input class="rounded-lg border-gray-300" size="large" :value="item.colorName"
-                                    readonly />
-                            </a-form-item>
-                            <a-form-item class="mb-2" label="Quantity">
-                                <a-input-number size="large" :value="item.quantity" style="width: 100%;" readonly />
-                            </a-form-item>
-
-                            <a-form-item class="mb-2" label="Price">
-                                <a-input-number size="large" :value="fomratVND(item.costPrice)" readonly
-                                    style="width: 100%;" />
-                            </a-form-item>
-                        </div>
-                    </div>
-                </a-form>
+            <a-modal v-model:open="modelDetail" :centered="true" style="margin: 1rem 0;" title="Receipt Detail"
+                :closable="false" :footer="null">
+                <FormEdit :id="ID" :receipt="Receipt" @close="handleClose" @save="handleSave" />
             </a-modal>
         </div>
-
     </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue';
-import dayjs, { Dayjs } from 'dayjs';
-import { PlusOutlined, CaretRightOutlined, CaretLeftOutlined, CloseCircleOutlined } from '@ant-design/icons-vue';
-import { NameData, WarehouseData, useTableData } from '../../hooks/warehouseData';
-import { Product_API, Receipt_API } from '../../services/api_url';
+import { computed, onMounted, ref } from 'vue';
+import FormAdd from '../../components/Warehouse/FormAdd.vue';
+import FormEdit from '../../components/Warehouse/FormEdit.vue';
+import { PlusOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons-vue';
+import { WarehouseData, useTableData } from '../../hooks/warehouseData';
+import { Receipt_API } from '../../services/api_url';
 import httpService from '../../services/http.service';
-import { FormInstance, message } from 'ant-design-vue';
-import { fomratVND, formatDate, formattedDayJs, formatTime } from '../../services/common.service';
+import { formatDate, formatTime } from '../../services/common.service';
 
 
 //Show modal
 const visible = ref(false);
 const modelDetail = ref(false);
 
-const disableFutureDates = (currentDate: Dayjs) => {
-    return currentDate.isAfter(dayjs(), 'day');
+const handleCancel = () => {
+    visible.value = false;
 };
 
-//Form create
-interface Values {
-    createDate: Dayjs;
-    entryDate: Dayjs;
-    note: string;
-    items: {
-        productId?: number,
-        colorId?: number,
-        quantity: number,
-        costPrice: number,
-    }[];
-}
-const formRef = ref<FormInstance>();
-const formState = reactive<Values>({
-    createDate: dayjs(),
-    entryDate: dayjs(),
-    note: '',
-    items: [{
-        productId: undefined,
-        colorId: undefined,
-        quantity: 0,
-        costPrice: 0,
-    }]
-});
-
-const productOptions = ref([]);
-const colorOptions = ref([]);
-
-const total = computed(() => {
-    return formState.items.reduce((acc, item) => {
-        return acc + (item.quantity * item.costPrice);
-    }, 0);
-});
-
-const addItem = () => {
-    formState.items.push({
-        productId: undefined,
-        colorId: undefined,
-        quantity: 0,
-        costPrice: 0
-    });
+const handleCreate = () => {
+    visible.value = false;
 };
 
-const removeItem = (index: number) => {
-    if (formState.items.length > 1) {
-        formState.items.splice(index, 1);
-    }
+const handleClose = () => {
+    modelDetail.value = false;
+};
+
+const handleSave = () => {
+    modelDetail.value = false;
 };
 
 //Drawer
@@ -312,7 +160,6 @@ const showDrawer = (item: WarehouseData) => {
     modelDetail.value = true;
     Receipt.value = item;
     ID.value = item.id
-    getDetailReceipt(ID.value);
 };
 
 //Pagination
@@ -350,7 +197,6 @@ function onSearchInput() {
 
 //Call API
 const { warehousesData, setWarehouseData } = useTableData();
-const { warehouseDetail, setWarehouseDetail } = useTableData();
 
 async function getAllReceipt(page: number, size: number, searchQuery: string) {
     try {
@@ -371,94 +217,7 @@ async function getAllReceipt(page: number, size: number, searchQuery: string) {
     }
 }
 
-async function getDetailReceipt(id: number) {
-    try {
-        const res = await httpService.getWithAuth(Receipt_API + `/${id}`);
-        setWarehouseDetail(res);
-        // console.log(warehouseDetail.value);
-    }
-    catch (error) {
-        console.log(error);
-    }
-
-}
-
-async function handleCreate() {
-    const allFilled = formState.items.every(item =>
-        item.productId && item.colorId && item.quantity > 0 && item.costPrice > 0
-    );
-
-    if (!allFilled) {
-        message.error("Vui lòng nhập đầy đủ thông tin trước khi tạo!");
-        return;
-    }
-
-    try {
-        const data = {
-            entryDate: formState.entryDate.toISOString(),
-            total: total.value,
-            note: formState.note,
-            receiptProducts: formState.items
-        };
-        console.log(data);
-        await httpService.postWithAuth(Receipt_API, data);
-        message.success("Add receipt successfully", 1);
-    } catch (error) {
-        console.log(error);
-        message.error("Fail to add receipt!", 1);
-    }
-};
-
-async function getProduct() {
-    try {
-        const res = await httpService.getWithAuth(Product_API + '/name');
-        productOptions.value = res.map((item: NameData) => ({
-            value: item.id,
-            label: item.name
-        }));
-    }
-    catch (error) {
-        console.log(error);
-    }
-}
-
-async function getColor(productId: number) {
-    try {
-        const res = await httpService.getWithAuth(Product_API + `/color/${productId}`);
-        colorOptions.value = res.map((item: NameData) => ({
-            value: item.id,
-            label: item.name
-        }));
-    }
-    catch (error) {
-        console.log(error);
-    }
-}
-
-const onProductChange = (item: any, index: any) => {
-    if (item.productId) {
-        getColor(item.productId).then(() => {
-            formState.items[index].colorId = undefined;
-        });
-    } else {
-        formState.items[index].colorId = undefined;
-    }
-};
-
 onMounted(() => {
     getAllReceipt(currentPage.value, pageSize.value, searchQuery.value);
-    getProduct();
 })
-
-// watch(
-//     () => formState.items.map(item => item.productId),
-//     (newValues) => {
-//         newValues.forEach((productId) => {
-//             if (productId) {
-//                 getColor(productId);
-//             }
-//         });
-//     }
-// );
-
 </script>

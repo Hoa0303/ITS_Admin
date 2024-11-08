@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { ref } from "vue";
 
 export interface BrandsTableData {
   id: string;
@@ -16,6 +16,14 @@ export interface ColorTableData {
   name: string;
 }
 
+export interface ReviewTableData {
+  id: string;
+  description: string;
+  start: number;
+  fullName: string;
+  createAt: string;
+}
+
 export function useTableData() {
   //Brands Data
   const brandsData = ref<BrandsTableData[]>([]);
@@ -26,13 +34,19 @@ export function useTableData() {
   //Category Data
   const categoriesData = ref<CategoryTableData[]>([]);
   function setcategoriesData(data: CategoryTableData[]) {
-    categoriesData.value = data
+    categoriesData.value = data;
   }
 
   //Color Data
   const colorData = ref<ColorTableData[]>([]);
   function setColorData(data: ColorTableData[]) {
-    colorData.value = data
+    colorData.value = data;
+  }
+
+  //Review Data
+  const reviewData = ref<ReviewTableData[]>([]);
+  function setReviewData(data: ReviewTableData[]) {
+    reviewData.value = data;
   }
 
   return {
@@ -41,7 +55,8 @@ export function useTableData() {
     categoriesData,
     setcategoriesData,
     colorData,
-    setColorData
+    setColorData,
+    reviewData,
+    setReviewData,
   };
 }
-

@@ -11,7 +11,7 @@ import {
     Row, Image, Table, Card, Radio, InputNumber,
     Upload, Checkbox, Select, Switch, Popconfirm,
     Result, DatePicker,Tabs, Space, Drawer,
-    Statistic,
+    Statistic, Rate,
 } from 'ant-design-vue';
 const components = [
     Button, Input, Form, Avatar, Col, 
@@ -19,7 +19,7 @@ const components = [
     Image, Table, Card, Upload, Checkbox, 
     Select, Radio, InputNumber, Switch, Popconfirm, 
     Result, DatePicker, Tabs, Space, Drawer,
-    Statistic,
+    Statistic,Rate
 ];
 
 const app = createApp(App);

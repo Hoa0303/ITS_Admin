@@ -74,7 +74,6 @@
                             {{ ActionStatus[item.orderStatus] }}
                         </a-button> -->
 
-                        <!-- Countdown nếu đơn chưa hết hạn và ActionStatus là Complete -->
                         <a-statistic-countdown
                             v-if="!item.reviewed && ActionStatus[item.orderStatus] == 'Complete' && !isOrderExpired(item.orderDate)"
                             :value="getDeadline(item.orderDate)" format="HH:mm:ss:SSS" style="margin-right: 50px" />

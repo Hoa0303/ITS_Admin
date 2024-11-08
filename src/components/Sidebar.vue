@@ -33,7 +33,8 @@ import { useRouter, useRoute } from 'vue-router';
 import { useSidebar } from "../hooks/useSidebar";
 import {
   AppstoreOutlined, DashboardOutlined, ShoppingOutlined,
-  DesktopOutlined, ReconciliationOutlined, UserOutlined, FolderOutlined
+  DesktopOutlined, ReconciliationOutlined, UserOutlined, FolderOutlined,
+  LikeOutlined
 } from '@ant-design/icons-vue';
 
 export default defineComponent({
@@ -54,12 +55,14 @@ export default defineComponent({
         '/dashboard': '1',
         '/order': '2',
         '/product': '3',
-        '/user': '4',
-        '/warehouse': '5',
-        '/brand': '6',
-        '/category': '7',
-        '/color': '8',
-        '/blank': '9',
+        '/review': '4',
+        '/user': '5',
+        '/warehouse': '6',
+        '/brand': '7',
+        '/category': '8',
+        '/color': '9',
+        '/log': '10',
+        '/blank': '11',
       };
       selectedKeys.value = [pathToKeyMap[currentPath] || ''];
     });
@@ -95,6 +98,14 @@ export default defineComponent({
       },
       {
         key: '4',
+        icon: () => h(LikeOutlined, { style: { fontSize: '15px' } }),
+        label: 'Reviews',
+        title: 'Reviews',
+        style: { fontSize: '15px' },
+        onClick: () => navigateTo('/review')
+      },
+      {
+        key: '5',
         icon: () => h(UserOutlined, { style: { fontSize: '15px' } }),
         label: 'User',
         title: 'User',
@@ -102,7 +113,7 @@ export default defineComponent({
         onClick: () => navigateTo('/user')
       },
       {
-        key: '5',
+        key: '6',
         icon: () => h(ReconciliationOutlined, { style: { fontSize: '15px' } }),
         label: 'Warehouse',
         title: 'Warehouse',
@@ -117,7 +128,7 @@ export default defineComponent({
         style: { fontSize: '15px' },
         children: [
           {
-            key: '6',
+            key: '7',
             icon: () => h(FolderOutlined, { style: { fontSize: '15px' } }),
             label: 'Brands',
             title: 'Brands',
@@ -125,7 +136,7 @@ export default defineComponent({
             onClick: () => navigateTo('/brand')
           },
           {
-            key: '7',
+            key: '8',
             icon: () => h(FolderOutlined, { style: { fontSize: '15px' } }),
             label: 'Category',
             title: 'Category',
@@ -133,7 +144,7 @@ export default defineComponent({
             onClick: () => navigateTo('/category')
           },
           {
-            key: '8',
+            key: '9',
             icon: () => h(FolderOutlined, { style: { fontSize: '15px' } }),
             label: 'Color',
             title: 'Color',
@@ -141,7 +152,15 @@ export default defineComponent({
             onClick: () => navigateTo('/color')
           },
           {
-            key: '9',
+            key: '10',
+            icon: () => h(FolderOutlined, { style: { fontSize: '15px' } }),
+            label: 'Log',
+            title: 'Log',
+            style: { fontSize: '15px' },
+            onClick: () => navigateTo('/log')
+          },
+          {
+            key: '11',
             icon: () => h(FolderOutlined, { style: { fontSize: '15px' } }),
             label: 'Blank Page',
             title: 'Blank Page',

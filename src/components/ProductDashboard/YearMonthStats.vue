@@ -4,21 +4,27 @@
             <a-input-number class="w-full" v-model:value="year" placeholder="Enter Year" size="large" />
             <a-input-number class="w-full" v-model:value="month" placeholder="Enter Month (1-12)" :min="0" :max="12"
                 size="large" />
+            <a-select size="large" class="col-span-2" v-model:value="selectedId" :options="productOptions"
+                placeholder="Select Product" @change="onProductChange(selectedId)" showSearch
+                optionFilterProp="label" />
         </div>
 
         <div class="grid md:grid-cols-4 sm:grid-cols-1 gap-4">
-            <!-- Chart -->
             <BarChart class="col-span-3" :chartData="chartData" :options="chartOptions" />
-            <!--  -->
             <div class="flex flex-col justify-center gap-10">
                 <a-card>
-                    <a-statistic title="Sales" :value="fomratVND(totalSales)" :precision="2"
-                        :value-style="{ color: '#3f8600' }" style="margin-right: 50px">
+                    <a-statistic title="Spending" :value="fomratVND(totalSpending)" :precision="2"
+                        :value-style="{ color: '#FFA500' }">
                     </a-statistic>
                 </a-card>
                 <a-card>
-                    <a-statistic title="Spending" :value="fomratVND(totalSpending)" :precision="2"
-                        :value-style="{ color: '#cf1322' }">
+                    <a-statistic title="Sales" :value="fomratVND(totalSales)" :precision="2"
+                        :value-style="{ color: '#77CEFF' }" style="margin-right: 50px">
+                    </a-statistic>
+                </a-card>
+                <a-card>
+                    <a-statistic title="Revenue" :value="fomratVND(revenue)" :precision="2"
+                        :value-style="{ color: revenue < 0 ? '#cf1322' : '#3f8600' }" style="margin-right: 50px">
                     </a-statistic>
                 </a-card>
             </div>
@@ -31,8 +37,9 @@ import { ref, reactive, watch, onMounted, computed } from 'vue';
 import { BarChart } from 'vue-chart-3';
 import { Chart, registerables } from "chart.js";
 import httpService from '../../services/http.service';
-import { Statistic_API } from '../../services/api_url';
+import { Product_API, Statistic_API } from '../../services/api_url';
 import { fomratVND } from '../../services/common.service';
+import { NameData } from '../../hooks/warehouseData';
 
 Chart.register(...registerables);
 
@@ -41,7 +48,7 @@ interface ChartData {
     datasets: {
         label: string;
         data: number[];
-        backgroundColor: string[];
+        backgroundColor: string;
         borderColor: string;
         borderWidth: number;
     }[];
@@ -56,14 +63,14 @@ const chartData = reactive<ChartData>({
         {
             label: 'Spending (VND)',
             data: [],
-            backgroundColor: Array(31).fill('#77CEFF'),
+            backgroundColor: '#FFA500',
             borderColor: '#000',
             borderWidth: 1,
         },
         {
             label: 'Sales (VND)',
             data: [],
-            backgroundColor: Array(31).fill('#FFA500'),
+            backgroundColor: '#77CEFF',
             borderColor: '#000',
             borderWidth: 1,
         }
@@ -88,39 +95,64 @@ const chartOptions = computed(() => ({
 
 const totalSpending = ref(0);
 const totalSales = ref(0);
+const revenue = ref(0);
 
-async function getRevenueByYear(year: number, month: number | null) {
-    const url = `${Statistic_API}/total-revenue-by-year?year=${year}${month ? `&month=${month}` : ''}`;
+async function getTotalSpending(year: number, month: number | null, id: number) {
+    const url = `${Statistic_API}/total-product-revenue-by-year?year=${year}${month ? `&month=${month}` : ''}&productId=${id}`;
     const res = await httpService.getWithAuth(url);
     if (res) {
+        chartData.labels = month ? Array(31).fill(0).map((_, i) => `${i + 1}`) : Array.from({ length: 12 }, (_, i) => `Month ${i + 1}`);
         const spendingData = res.spending;
         const salesData = res.sales;
-        chartData.labels = month ? Array(31).fill(0).map((_, i) => `${i + 1}`) : Array.from({ length: 12 }, (_, i) => `Month ${i + 1}`);
+
         if (spendingData) {
             spendingData.statisticData.map((e: any) => {
                 chartData.datasets[0].data[e.time - 1] = e.statistic
             })
             totalSpending.value = spendingData.total;
         }
+
         if (salesData) {
             salesData.statisticData.map((e: any) => {
                 chartData.datasets[1].data[e.time - 1] = e.statistic
             })
             totalSales.value = salesData.total;
         }
+        revenue.value = totalSales.value - totalSpending.value;
     }
 }
 
-watch([year, month], () => {
+const productOptions = ref([]);
+const selectedId = ref(4);
+
+async function getProduct() {
+    try {
+        const res = await httpService.getWithAuth(Product_API + '/name');
+        productOptions.value = res.map((item: NameData) => ({
+            value: item.id,
+            label: item.name
+        }));
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+const onProductChange = (id: number) => {
+    selectedId.value = id;
+    console.log(selectedId.value);
+};
+
+watch([year, month, selectedId], () => {
     if (year.value) {
         chartData.datasets[0].data = [];
         chartData.datasets[1].data = [];
-
-        getRevenueByYear(year.value, month.value);
+        getTotalSpending(year.value, month.value, selectedId.value);
     }
 });
 
 onMounted(() => {
-    getRevenueByYear(year.value!, month.value);
+    getTotalSpending(year.value!, month.value, selectedId.value);
+    getProduct();
 });
 </script>

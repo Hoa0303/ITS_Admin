@@ -5,7 +5,7 @@
     <div class="mt-4">
       <div class="flex flex-wrap -mx-6">
         <!-- Count User -->
-        <div class="w-full px-6 sm:w-1/2 xl:w-1/4">
+        <router-link to="/user" class="w-full px-6 sm:w-1/2 xl:w-1/4">
           <div class="flex items-center px-5 py-6 bg-white rounded-md shadow-sm">
             <div class="p-3 bg-indigo-600 bg-opacity-75 rounded-full">
               <svg class="w-8 h-8 text-white" viewBox="0 0 28 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -35,10 +35,10 @@
               <div class="text-gray-500">New Users</div>
             </div>
           </div>
-        </div>
+        </router-link>
 
         <!-- Count Order -->
-        <div class="w-full px-6 mt-6 sm:w-1/2 xl:w-1/4 sm:mt-0">
+        <router-link to="/order" class="w-full px-6 mt-6 sm:w-1/2 xl:w-1/4 sm:mt-0">
           <div class="flex items-center px-5 py-6 bg-white rounded-md shadow-sm">
             <div class="p-3 bg-blue-600 bg-opacity-75 rounded-full">
               <svg class="w-8 h-8 text-white" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -59,10 +59,10 @@
               <div class="text-gray-500">Total Orders</div>
             </div>
           </div>
-        </div>
+        </router-link>
 
         <!-- Count Product -->
-        <div class="w-full px-6 mt-6 sm:w-1/2 xl:w-1/4 xl:mt-0">
+        <router-link to="/product" class="w-full px-6 mt-6 sm:w-1/2 xl:w-1/4 xl:mt-0">
           <div class="flex items-center px-5 py-6 bg-white rounded-md shadow-sm">
             <div class="p-3 bg-pink-600 bg-opacity-75 rounded-full">
               <svg class="w-8 h-8 text-white" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -79,10 +79,10 @@
               <div class="text-gray-500">Available Products</div>
             </div>
           </div>
-        </div>
+        </router-link>
 
         <!-- Count Entry Receipt -->
-        <div class="w-full px-6 mt-6 sm:w-1/2 xl:w-1/4 xl:mt-0">
+        <router-link to="/warehouse" class="w-full px-6 mt-6 sm:w-1/2 xl:w-1/4 xl:mt-0">
           <div class="flex items-center px-5 py-6 bg-white rounded-md shadow-sm">
             <div class="p-3 bg-orange-600 bg-opacity-75 rounded-full">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -98,7 +98,28 @@
               <div class="text-gray-500">Total Receipts</div>
             </div>
           </div>
-        </div>
+        </router-link>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <div class="flex flex-wrap -mx-6">
+        <!-- Count User -->
+        <router-link to="/productdashboard" class="w-full px-6 sm:w-1/2 xl:w-1/4">
+          <div class="flex items-center px-5 py-6 bg-white rounded-md shadow-sm">
+            <div class="p-3 bg-green-600 bg-opacity-75 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-bar-chart-line-fill w-8 h-8 text-white" viewBox="0 0 16 16">
+                <path
+                  d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1z" />
+              </svg>
+            </div>
+
+            <div class="mx-5">
+              <div class="text-gray-500">Product Statistics</div>
+            </div>
+          </div>
+        </router-link>
       </div>
     </div>
 
