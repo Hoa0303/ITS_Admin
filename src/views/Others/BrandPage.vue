@@ -121,7 +121,8 @@ export default defineComponent({
       try {
         await message.loading('Create brand...', 2);
         const res = await httpService.postWithAuth(Brand_API, data);
-        setBrandsData([...brandsData.value, res]);
+        // setBrandsData([...brandsData.value, res]);
+        getAll();
         console.log(brandsData.value);
         message.success('Brand created successfully', 2);
       } catch (error) {

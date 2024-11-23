@@ -21,9 +21,7 @@
       <div class="relative">
         <button @click="dropdownOpen = !dropdownOpen"
           class="relative z-10 block w-8 h-8 overflow-hidden rounded-full shadow focus:outline-none">
-          <img class="object-cover w-full h-full"
-            src="https://images.unsplash.com/photo-1528892952291-009c663ce843?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=296&q=80"
-            alt="Your avatar" />
+          <img class="object-cover w-full h-full" src="../assets/UserImg.webp" alt="Your avatar" />
         </button>
 
         <div v-show="dropdownOpen" @click="dropdownOpen = false" class="fixed inset-0 z-10 w-full h-full"></div>
@@ -33,18 +31,26 @@
           leave-active-class="transition duration-150 ease-in transform" leave-from-class="scale-100 opacity-100"
           leave-to-class="scale-95 opacity-0">
           <div v-show="dropdownOpen" class="absolute right-0 z-20 w-48 py-2 mt-2 bg-white rounded-md shadow-xl">
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Profile</a>
-            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Language</a>
-            <router-link to="/" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Log
-              out</router-link>
+            <a @click="visible = true"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Profile</a>
+            <!-- <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Language</a> -->
+            <router-link to="/" @click="logout()"
+              class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">
+              Log out
+            </router-link>
           </div>
         </transition>
       </div>
     </div>
   </header>
+
+  <a-modal v-model:open="visible" :footer="null" title="User Profile">
+    <UserProfile />
+  </a-modal>
+
 </template>
 
-<script lang="ts">
+<!-- <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useSidebar } from "../hooks/useSidebar";
 
@@ -59,4 +65,23 @@ export default defineComponent({
     };
   },
 });
+</script> -->
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { useSidebar } from "../hooks/useSidebar";
+import UserProfile from "./User/UserProfile.vue";
+import Cookies from "js-cookie";
+
+const dropdownOpen = ref(false);
+const { isOpen } = useSidebar();
+const visible = ref(false);
+
+const logout = () => {
+  const confirmed = window.confirm("Are you sure you want to log out?");
+  if (confirmed) {
+    Cookies.remove('admin_data');
+  }
+};
+
 </script>

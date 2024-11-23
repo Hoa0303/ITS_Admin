@@ -157,9 +157,9 @@ async function handleCreate() {
             receiptProducts: formState.items
         };
         console.log(data);
-        // await httpService.postWithAuth(Receipt_API, data);
+        await httpService.postWithAuth(Receipt_API, data);
         message.success("Add receipt successfully", 1);
-        // emit('create');
+        emit('create');
     } catch (error) {
         console.log(error);
         message.error("Fail to add receipt!", 1);

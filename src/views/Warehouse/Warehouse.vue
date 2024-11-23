@@ -76,7 +76,7 @@
                                 <td class="px-6 py-4 text-gray-600 border-b">
                                     {{ formatDate(item.entryDate) }} {{ formatTime(item.entryDate) }}
                                 </td>
-                                <td class="px-6 py-4 text-gray-600 border-b">{{ item.total }}</td>
+                                <td class="px-6 py-4 text-gray-600 border-b">{{ fomratVND(item.total) }}</td>
                                 <td class="px-6 py-4 text-indigo-600 border-b cursor-pointer hover:text-indigo-900">
                                     <button class="mr-2" @click="showDrawer(item)">
                                         <svg width="20" height="20" fill="currentColor" class="bi bi-pencil-square">
@@ -129,7 +129,7 @@ import { PlusOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design
 import { WarehouseData, useTableData } from '../../hooks/warehouseData';
 import { Receipt_API } from '../../services/api_url';
 import httpService from '../../services/http.service';
-import { formatDate, formatTime } from '../../services/common.service';
+import { fomratVND, formatDate, formatTime } from '../../services/common.service';
 
 
 //Show modal
@@ -140,8 +140,9 @@ const handleCancel = () => {
     visible.value = false;
 };
 
-const handleCreate = () => {
+const handleCreate = async () => {
     visible.value = false;
+    getAllReceipt(currentPage.value, pageSize.value, searchQuery.value);
 };
 
 const handleClose = () => {
@@ -163,7 +164,7 @@ const showDrawer = (item: WarehouseData) => {
 };
 
 //Pagination
-const pageSize = ref<number>(5);
+const pageSize = ref<number>(20);
 const currentPage = ref<number>(1);
 const totalEntries = ref<number>(0);
 const totalPages = computed(() => Math.ceil(totalEntries.value / pageSize.value));

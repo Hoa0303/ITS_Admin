@@ -21,6 +21,11 @@
                         :value-style="{ color: '#cf1322' }">
                     </a-statistic>
                 </a-card>
+                <a-card>
+                    <a-statistic title="Revenue" :value="fomratVND(revenue)" :precision="2"
+                        :value-style="{ color: revenue < 0 ? '#cf1322' : '#3f8600' }" style="margin-right: 50px">
+                    </a-statistic>
+                </a-card>
             </div>
         </div>
     </div>
@@ -88,6 +93,7 @@ const chartOptions = computed(() => ({
 
 const totalSpending = ref(0);
 const totalSales = ref(0);
+const revenue = ref(0);
 
 async function getRevenueByYear(year: number, month: number | null) {
     const url = `${Statistic_API}/total-revenue-by-year?year=${year}${month ? `&month=${month}` : ''}`;
@@ -108,6 +114,7 @@ async function getRevenueByYear(year: number, month: number | null) {
             })
             totalSales.value = salesData.total;
         }
+        revenue.value = totalSales.value - totalSpending.value;
     }
 }
 

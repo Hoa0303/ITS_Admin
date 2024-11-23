@@ -74,12 +74,12 @@
                             {{ ActionStatus[item.orderStatus] }}
                         </a-button> -->
 
-                        <a-statistic-countdown
+                        <!-- <a-statistic-countdown
                             v-if="!item.reviewed && ActionStatus[item.orderStatus] == 'Complete' && !isOrderExpired(item.orderDate)"
-                            :value="getDeadline(item.orderDate)" format="HH:mm:ss:SSS" style="margin-right: 50px" />
+                            :value="getDeadline(item.orderDate)" format="HH:mm:ss:SSS" style="margin-right: 50px" /> -->
 
-                        <a-button class="m-2" :disabled="!isOrderExpired(item.orderDate) || item.reviewed"
-                            v-if="ActionStatus[item.orderStatus] == 'Complete'" @click="UpdateSatus(item.id)">
+                        <a-button class="m-2" v-if="ActionStatus[item.orderStatus] == 'Complete'"
+                            @click="UpdateSatus(item.id)">
                             {{ ActionStatus[item.orderStatus] }}
                         </a-button>
 
@@ -323,26 +323,54 @@ const onOk = async () => {
 
 function updatePageSize() {
     currentPage.value = 1;
-    getAll(currentPage.value, pageSize.value, searchQuery.value);
+    // getAll(currentPage.value, pageSize.value, searchQuery.value);
+    const status = props.activeKey;
+    if (status == 6) {
+        getAll(currentPage.value, pageSize.value, searchQuery.value);
+    }
+    else {
+        getOrderWithStatus(status, currentPage.value, pageSize.value, searchQuery.value);
+    }
 }
 
 function nextPage() {
     if (currentPage.value < totalPages.value) {
         currentPage.value++;
-        getAll(currentPage.value, pageSize.value, searchQuery.value);
+        // getAll(currentPage.value, pageSize.value, searchQuery.value);
+        const status = props.activeKey;
+        if (status == 6) {
+            getAll(currentPage.value, pageSize.value, searchQuery.value);
+        }
+        else {
+            getOrderWithStatus(status, currentPage.value, pageSize.value, searchQuery.value);
+        }
     }
 }
 
 function previousPage() {
     if (currentPage.value > 1) {
         currentPage.value--;
-        getAll(currentPage.value, pageSize.value, searchQuery.value);
+        // getAll(currentPage.value, pageSize.value, searchQuery.value);
+        const status = props.activeKey;
+        if (status == 6) {
+            getAll(currentPage.value, pageSize.value, searchQuery.value);
+        }
+        else {
+            getOrderWithStatus(status, currentPage.value, pageSize.value, searchQuery.value);
+        }
     }
 }
 
 function onSearchInput() {
     currentPage.value = 1;
-    getAll(currentPage.value, pageSize.value, searchQuery.value);
+    // getAll(currentPage.value, pageSize.value, searchQuery.value);
+    const status = props.activeKey;
+    if (status == 6) {
+        getAll(currentPage.value, pageSize.value, searchQuery.value);
+    }
+    else {
+        getOrderWithStatus(status, currentPage.value, pageSize.value, searchQuery.value);
+    }
 }
 
 //Hoàn thành đơn

@@ -152,7 +152,7 @@ const showDrawer = (item: LogData) => {
 
 
 //Pagination
-const pageSize = ref<number>(5);
+const pageSize = ref<number>(20);
 const currentPage = ref<number>(1);
 const totalEntries = ref<number>(0);
 const totalPages = computed(() => Math.ceil(totalEntries.value / pageSize.value));

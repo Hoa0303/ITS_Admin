@@ -1,6 +1,7 @@
 const base = import.meta.env.VITE_API_URL + "/api";
 
 export const User_API: string = base + "/user";
+export const Auth_API: string = base + "/auth";
 export const Product_API: string = base + "/products";
 export const Brand_API: string = base + "/brands";
 export const Category_API: string = base + "/categories";

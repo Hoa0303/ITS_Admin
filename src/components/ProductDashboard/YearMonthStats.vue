@@ -140,7 +140,7 @@ async function getProduct() {
 
 const onProductChange = (id: number) => {
     selectedId.value = id;
-    console.log(selectedId.value);
+    // console.log(selectedId.value);
 };
 
 watch([year, month, selectedId], () => {

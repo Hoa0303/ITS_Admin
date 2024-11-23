@@ -24,6 +24,13 @@ export const getAuthHeader = () => {
   return {};
 };
 
+export const getAuthRole = () => {
+  const token = getAuthCookie();
+  if(token && token.jwt){
+    return token.roles
+  }
+}
+
 const authService = {
   login,
 };

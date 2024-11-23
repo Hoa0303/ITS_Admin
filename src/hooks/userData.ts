@@ -4,9 +4,19 @@ export interface UsersData {
   id: string;
   fullName: string;
   email: string;
+  roles: string[];
   phoneNumber: string;
+  lockedOut: boolean;
   createAt: string;
   updateAt: string;
+}
+
+export enum Role {
+  "Admin",
+  "Employee",
+  "Stocker",
+  "Statist",
+  "User",
 }
 
 export function useTableData() {
@@ -15,8 +25,15 @@ export function useTableData() {
     usersData.value = data;
   }
 
+  const userDetail = ref<UsersData>();
+  function setDetail(data: UsersData) {
+    userDetail.value = data;
+  }
+
   return {
     usersData,
     setUserData,
+    userDetail,
+    setDetail,
   };
 }

@@ -19,6 +19,11 @@
                         :value-style="{ color: '#cf1322' }">
                     </a-statistic>
                 </a-card>
+                <a-card>
+                    <a-statistic title="Revenue" :value="fomratVND(revenue)" :precision="2"
+                        :value-style="{ color: revenue < 0 ? '#cf1322' : '#3f8600' }" style="margin-right: 50px">
+                    </a-statistic>
+                </a-card>
             </div>
         </div>
     </div>
@@ -86,6 +91,7 @@ const chartOptions = computed(() => ({
 
 const totalSpending = ref();
 const totalSales = ref();
+const revenue = ref(0);
 
 function generateDateRangeLabels(dateFrom: string, dateTo: string): string[] {
     const startDate = new Date(dateFrom);
@@ -127,6 +133,7 @@ async function getTotalDataByDateRange(dateFrom: string, dateTo: string) {
             });
             totalSales.value = salesData.total;
         }
+        revenue.value = totalSales.value - totalSpending.value;
     }
 }
 

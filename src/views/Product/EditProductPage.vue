@@ -137,7 +137,7 @@
                             :rules="[{ required: true, message: 'Please enter the RAM details' }]">
                             <a-select v-model:value="formState.Ram" size="large"
                                 class="rounded-lg h-9 border-gray-300 w-full">
-                                <a-select-option v-for="ram in [4, 6, 8, 12, 32, 64]" :key="ram" :value="ram">{{ ram
+                                <a-select-option v-for="ram in [4, 6, 8, 16, 32, 64]" :key="ram" :value="ram">{{ ram
                                     }}</a-select-option>
                             </a-select>
                         </a-form-item>

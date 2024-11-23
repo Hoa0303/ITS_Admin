@@ -56,11 +56,13 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import authService from "../services/auth.service";
+import authService, { getAuthRole } from "../services/auth.service";
+import Cookies from "js-cookie";
 
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const userRole = ref('');
     const email = ref("hoab2005755@student.ctu.edu.vn");
     const password = ref("Hoa123");
 
@@ -72,8 +74,23 @@ export default defineComponent({
         }
         const res = await authService.login(data);
         console.log("Login successful:", res);
-        router.push("/dashboard");
+
+        userRole.value = getAuthRole()[0];
+
+        if (userRole.value === "Admin") {
+          router.push("/dashboard");
+        } else if (userRole.value === "Statist") {
+          router.push("/dashboard");
+        } else if (userRole.value === "Employee") {
+          router.push("/order");
+        } else if (userRole.value === "Stocker") {
+          router.push("/product");
+        } else {
+          window.alert("User role is not authorized to access any page.");
+          Cookies.remove('admin_data');
+        }
       } catch (error) {
+        window.alert("Invalid account");
         console.error("Login failed:", error);
       }
     }

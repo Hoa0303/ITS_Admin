@@ -23,6 +23,25 @@ const getWithAuthPagination = (
     })
     .then((res) => res.data);
 
+const getUser = (
+  url: string,
+  page: number,
+  pageSize: number,
+  search: string,
+  role: number,
+) =>
+  axios
+    .get(url, {
+      headers: getAuthHeader(),
+      params: {
+        page: page,
+        pageSize: pageSize,
+        search: search ?? "",
+        role: role,
+      },
+    })
+    .then((res) => res.data);
+
 const post = (url: string, data: any) =>
   axios.post(url, data).then((res) => res.data);
 
@@ -44,6 +63,7 @@ const httpService = {
   get,
   getWithAuth,
   getWithAuthPagination,
+  getUser,
   post,
   postWithAuth,
   put,
