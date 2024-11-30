@@ -39,8 +39,8 @@
                     </div>
 
                     <!-- Add color + img_Color -->
-                    <a-card :bordered="true" class="my-4 shadow-xl" v-for="(color) in dynamicValidateForm.colors"
-                        :key="color.id">
+                    <a-card :bordered="true" class="my-4 shadow-xl relative"
+                        v-for="(color) in dynamicValidateForm.colors" :key="color.id">
                         <div class="grid grid-cols-3 gap-3">
                             <a-form-item label="Prices"
                                 :rules="[{ required: true, message: 'Please enter the price' }]">
@@ -54,7 +54,7 @@
                                     class="rounded-lg h-9 border-gray-300 w-full" />
                             </a-form-item>
                             <a-form-item label="Select Color">
-                                <a-select v-model:value="color.colorID">
+                                <a-select v-model:value="color.colorID" @change="handleChangeColor(color)">
                                     <a-select-option v-for="item in colorData" :key="item.id" :value="item.id">
                                         {{ item.name }}
                                     </a-select-option>
@@ -71,7 +71,8 @@
                                     </a-button>
                                 </a-upload>
                             </a-form-item>
-                            <MinusCircleOutlined class="text-red-500 cursor-pointer" @click="removeColor(color)" />
+                            <CloseCircleOutlined class="text-red-500 cursor-pointer absolute top-3 right-3"
+                                @click="removeColor(color)" />
                         </div>
                     </a-card>
                     <a-form-item>
@@ -209,7 +210,7 @@
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
-import { PlusOutlined, UploadOutlined, LoadingOutlined, MinusCircleOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined, UploadOutlined, LoadingOutlined, CloseCircleOutlined } from '@ant-design/icons-vue';
 import { useTableData } from "../../hooks/dataTable";
 import productService from '../../services/product.service';
 import { toImageLink } from '../../services/common.service';
@@ -328,6 +329,10 @@ const dynamicValidateForm = reactive<{ colors: Color[] }>({
 const handleColorFileChange = (color: Color, { fileList }: { fileList: any[] }) => {
     color.file = fileList.length ? fileList[0].originFileObj : null;
 };
+
+const handleChangeColor = (color: Color) => {
+    color.file = null;
+}
 
 const onFinish = async (values: any) => {
     const formData = new FormData();

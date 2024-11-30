@@ -12,13 +12,13 @@
             <BarChart class="col-span-3" :chartData="chartData" :options="chartOptions" />
             <div class="flex flex-col justify-center gap-10">
                 <a-card>
-                    <a-statistic title="Spending" :value="fomratVND(totalSpending)" :precision="2"
-                        :value-style="{ color: '#FFA500' }">
+                    <a-statistic title="Sales" :value="fomratVND(totalSales)" :precision="2"
+                        :value-style="{ color: '#3f8600' }" style="margin-right: 50px">
                     </a-statistic>
                 </a-card>
                 <a-card>
-                    <a-statistic title="Sales" :value="fomratVND(totalSales)" :precision="2"
-                        :value-style="{ color: '#77CEFF' }" style="margin-right: 50px">
+                    <a-statistic title="Spending" :value="fomratVND(totalSpending)" :precision="2"
+                        :value-style="{ color: '#cf1322' }">
                     </a-statistic>
                 </a-card>
                 <a-card>
@@ -141,7 +141,7 @@ async function getTotalDataByDateRange(dateFrom: string, dateTo: string, id: num
 }
 
 const productOptions = ref([]);
-const selectedId = ref(4);
+const selectedId = ref(1);
 
 async function getProduct() {
     try {

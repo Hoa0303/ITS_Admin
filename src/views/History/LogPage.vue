@@ -63,7 +63,7 @@
                             <td class="px-6 py-4 text-gray-600 border-b">
                                 {{ formatDate(item.entryDate) }} {{ formatTime(item.entryDate) }}
                             </td>
-                            <td class="px-6 py-4 text-gray-600 border-b">{{ item.total }}</td>
+                            <td class="px-6 py-4 text-gray-600 border-b">{{ fomratVND(item.total) }}</td>
                             <td class="px-6 py-4 text-indigo-600 border-b cursor-pointer hover:text-indigo-900">
                                 <button class="mr-2" @click="showDrawer(item)">
                                     <svg width="20" height="20" fill="currentColor" class="bi bi-pencil-square">
@@ -113,7 +113,7 @@ import { LogData, useTableData } from '../../hooks/warehouseData';
 import { CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons-vue';
 import { Log_API } from '../../services/api_url';
 import httpService from '../../services/http.service';
-import { formatDate, formatTime } from '../../services/common.service';
+import { fomratVND, formatDate, formatTime } from '../../services/common.service';
 import LogDetail from './LogDetail.vue';
 
 const modelDetail = ref(false);

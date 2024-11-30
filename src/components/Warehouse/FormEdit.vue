@@ -46,7 +46,7 @@
         </div>
         <div class="flex justify-end">
             <a-button @click="handleClose" style="margin-right: 10px">Cancel</a-button>
-            <a-button type="primary" @click="handleSave">Create</a-button>
+            <a-button type="primary" @click="handleSave">Update</a-button>
         </div>
     </a-form>
 </template>
@@ -85,6 +85,7 @@ function updateTotal() {
 async function getDetailReceipt(id: number) {
     try {
         const res = await httpService.getWithAuth(Receipt_API + `/${id}`);
+        // console.log(res);        
         setWarehouseDetail(res);
     }
     catch (error) {

@@ -18,7 +18,7 @@
         </div>
 
         <div class="relative">
-          <select
+          <select v-model="filterStatus" @change="onFilterChange"
             class="block w-full h-full px-4 py-2 pr-8 leading-tight text-gray-700 bg-white border-t border-b border-r border-gray-400 rounded-r appearance-none sm:rounded-r-none sm:border-r-0 focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
             <option>All</option>
             <option>Active</option>
@@ -70,7 +70,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in productsData" :key="index"
+              <tr v-for="(item, index) in products" :key="index"
                 class="odd:bg-gray-100 even:bg-gray-50 hover:bg-gray-200 transition duration-150 ease-in-out">
                 <td class="px-6 py-4 text-lg text-gray-700 border-b">{{ index + 1 }}</td>
                 <td class="px-6 py-4 text-gray-600 border-b">{{ item.name }}</td>
@@ -131,7 +131,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
-import { useTableData } from "../../hooks/productData";
+import { ProductsData, useTableData } from "../../hooks/productData";
 import productService from '../../services/product.service'
 import { PlusOutlined, CaretRightOutlined, CaretLeftOutlined } from '@ant-design/icons-vue';
 import { useRouter } from 'vue-router';
@@ -141,6 +141,7 @@ import { Product_API } from "../../services/api_url";
 import { message } from "ant-design-vue";
 
 const { productsData, setProductData } = useTableData();
+const products = ref<ProductsData[]>();
 const router = useRouter();
 
 const pageSize = ref<number>(10);
@@ -150,6 +151,8 @@ const data = ref([]);
 const totalPages = computed(() => Math.ceil(totalEntries.value / pageSize.value));
 const startItem = computed(() => (currentPage.value - 1) * pageSize.value + 1);
 const endItem = computed(() => Math.min(currentPage.value * pageSize.value, totalEntries.value));
+
+const filterStatus = ref('All');
 
 const searchQuery = ref('');
 
@@ -166,6 +169,9 @@ async function getAll(page: number, size: number, searchQuery: string) {
     imageUrl: toImageLink(item.imageUrl),
   }));
   setProductData(formattedData);
+  products.value = productsData.value;
+  console.log(productsData.value);
+  console.log(products.value);
   totalEntries.value = res.data.totalItems;
   data.value = res.data;
 }
@@ -194,6 +200,22 @@ async function deleteProduct(id: number) {
   catch {
     message.error("Cannot delete product: ", id);
   }
+}
+
+function filterProducts() {
+  if (filterStatus.value === 'Active') {
+    products.value = productsData.value.filter(product => product.enable === true);
+  }
+  else if (filterStatus.value === 'Inactive') {
+    products.value = productsData.value.filter(product => product.enable === false);
+  } else {
+    products.value = productsData.value;
+  }
+}
+
+function onFilterChange(event: any) {
+  filterStatus.value = event.target.value;
+  filterProducts();
 }
 
 function updatePageSize() {

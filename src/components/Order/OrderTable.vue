@@ -54,8 +54,13 @@
                         {{ OrderSatus[item.orderStatus] }}
                     </td>
                     <td class="px-6 py-4 text-gray-600 border-b" :class="[statusStyles[item.orderStatus]]">
-                        <a-button class="m-2" v-if="(ActionStatus[item.orderStatus] && ActionStatus[item.orderStatus] != 'Delivery'
-                            && ActionStatus[item.orderStatus] != 'Complete')" @click="UpdateSatus(item.id)">
+                        <!-- <a-button class="m-2" v-if="(ActionStatus[item.orderStatus] && ActionStatus[item.orderStatus] != 'Delivery'
+                            && ActionStatus[item.orderStatus] != 'Complete' && ActionStatus[item.orderStatus] != 'Receive')" @click="UpdateSatus(item.id)">
+                            {{ ActionStatus[item.orderStatus] }}
+                        </a-button> -->
+
+                        <a-button class="m-2" v-if="(ActionStatus[item.orderStatus] && (ActionStatus[item.orderStatus] == 'Approve'
+                            || ActionStatus[item.orderStatus] == 'Complete'))" @click="UpdateSatus(item.id)">
                             {{ ActionStatus[item.orderStatus] }}
                         </a-button>
 
@@ -78,8 +83,8 @@
                             v-if="!item.reviewed && ActionStatus[item.orderStatus] == 'Complete' && !isOrderExpired(item.orderDate)"
                             :value="getDeadline(item.orderDate)" format="HH:mm:ss:SSS" style="margin-right: 50px" /> -->
 
-                        <a-button class="m-2" v-if="ActionStatus[item.orderStatus] == 'Complete'"
-                            @click="UpdateSatus(item.id)">
+                        <a-button class="m-2" v-if="ActionStatus[item.orderStatus] == 'Receive'"
+                            @click="receivedOrder(item.id)">
                             {{ ActionStatus[item.orderStatus] }}
                         </a-button>
 
@@ -273,6 +278,24 @@ async function cacelOrder(id: number) {
     }
 }
 
+async function receivedOrder(id: number) {
+    try {
+        await message.loading('Updating status...', 2);
+        await httpService.putWithAuth(Order_API + `/received/${id}`, id);
+        const updatedOrders = ordersData.value.map(order => {
+            if (order.id === id) {
+                return { ...order, orderStatus: 3 };
+            }
+            return order;
+        });
+        setOrderData(updatedOrders);
+        message.success("Update status successfully", 2);
+    }
+    catch {
+        message.error("Fail to update order: ", id);
+    }
+}
+
 interface Values {
     request: number;
     weight: number;
@@ -374,19 +397,19 @@ function onSearchInput() {
 }
 
 //Hoàn thành đơn
-let deadline: number;
+// let deadline: number;
 
-function getDeadline(orderDate: string): number {
-    const orderDateObj = new Date(orderDate);
-    deadline = orderDateObj.getTime() + 3 * 24 * 60 * 60 * 1000;
-    return deadline;
-}
+// function getDeadline(orderDate: string): number {
+//     const orderDateObj = new Date(orderDate);
+//     deadline = orderDateObj.getTime() + 3 * 24 * 60 * 60 * 1000;
+//     return deadline;
+// }
 
-function isOrderExpired(orderDate: string): boolean {
-    const currentTime = new Date().getTime();
-    const orderDeadline = getDeadline(orderDate);
-    return currentTime > orderDeadline;
-}
+// function isOrderExpired(orderDate: string): boolean {
+//     const currentTime = new Date().getTime();
+//     const orderDeadline = getDeadline(orderDate);
+//     return currentTime > orderDeadline;
+// }
 
 onMounted(() => {
     const status = props.activeKey;
