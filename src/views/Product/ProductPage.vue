@@ -170,8 +170,8 @@ async function getAll(page: number, size: number, searchQuery: string) {
   }));
   setProductData(formattedData);
   products.value = productsData.value;
-  console.log(productsData.value);
-  console.log(products.value);
+  // console.log(productsData.value);
+  // console.log(products.value);
   totalEntries.value = res.data.totalItems;
   data.value = res.data;
 }

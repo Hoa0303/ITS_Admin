@@ -40,7 +40,7 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="bg-indigo-800 text-gray-100">
                         <tr>
-                            <th class="px-5 py-3 text-sm font-semibold uppercase">Log Id</th>
+                            <th class="px-5 py-3 text-sm font-semibold uppercase">#</th>
                             <th class="px-5 py-3 text-sm font-semibold uppercase">Receipt Id</th>
                             <th class="px-5 py-3 text-sm font-semibold uppercase">Creator</th>
                             <th class="px-5 py-3 text-sm font-semibold uppercase">Note</th>
