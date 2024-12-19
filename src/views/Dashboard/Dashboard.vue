@@ -127,10 +127,10 @@
       <StatisticChart />
     </div>
 
-    <h3 class="text-3xl font-medium text-gray-700">Revenue</h3>
+    <!-- <h3 class="text-3xl font-medium text-gray-700">Revenue</h3>
     <div class="my-8">
       <RevenueChart />
-    </div>
+    </div> -->
   </div>
 </template>
 

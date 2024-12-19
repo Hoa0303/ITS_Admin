@@ -1,5 +1,5 @@
 <template>
-    <h3 class="text-gray-700 text-3xl font-medium">Log Pgae</h3>
+    <h3 class="text-gray-700 text-3xl font-medium">Log Page</h3>
 
     <!-- Header -->
     <div class="flex flex-col mt-3 sm:flex-row  justify-between">

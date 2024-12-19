@@ -33,6 +33,7 @@
             <thead class="bg-indigo-800 text-gray-100">
                 <tr>
                     <th class="px-5 py-3 text-sm font-semibold uppercase">Id</th>
+                    <th class="px-5 py-3 text-sm font-semibold uppercase">Shipping Code</th>
                     <th class="px-5 py-3 text-sm font-semibold uppercase">Total</th>
                     <th class="px-5 py-3 text-sm font-semibold uppercase">Amount Paid</th>
                     <th class="px-5 py-3 text-sm font-semibold uppercase">Order Date</th>
@@ -46,6 +47,7 @@
                 <tr v-for="(item, index) in ordersData" :key="index"
                     class="odd:bg-gray-100 even:bg-gray-50 hover:bg-gray-200 transition duration-150 ease-in-out">
                     <td class="px-6 py-4 text-lg text-gray-700 border-b">{{ item.id }}</td>
+                    <td class="px-6 py-4 text-lg text-gray-700 border-b">{{ item.shippingCode }}</td>
                     <td class="px-6 py-4 text-gray-600 border-b">{{ item.total }}</td>
                     <td class="px-6 py-4 text-gray-600 border-b">{{ item.amountPaid }}</td>
                     <td class="px-6 py-4 text-gray-600 border-b">{{ formattedDayJs(item.orderDate) }}</td>
@@ -212,6 +214,7 @@ async function getAll(page: number, size: number, searchQuery: string) {
         const res = await orderService.getAll(page, size, searchQuery);
         const formattedData = res.items.map((item: OrdersData) => ({
             id: item.id,
+            shippingCode: item.shippingCode,
             total: item.total,
             amountPaid: item.amountPaid,
             orderDate: item.orderDate,
@@ -231,6 +234,7 @@ async function getOrderWithStatus(status: number, page: number, size: number, se
         const res = await httpService.getWithAuthPagination(Order_API + `/status/${status}`, page, size, searchQuery);
         const formattedData = res.items.map((item: OrdersData) => ({
             id: item.id,
+            shippingCode: item.shippingCode,
             total: item.total,
             amountPaid: item.amountPaid,
             orderDate: item.orderDate,
